@@ -1,10 +1,21 @@
-import { Handlers } from "$fresh/server.ts";
+//    ___
+//   / __|___ _ __  _ __ _ _ ___ ______
+//  | (__/ _ \ '  \| '_ \ '_/ -_|_-<_-<
+//   \___\___/_|_|_| .__/_| \___/__/__/
+//                 |_|
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ *
+ * @module
+ */
+
+import { Handlers } from '$fresh/server.ts';
 import {
   decodeImageFromUrl,
   getDominantColorsFromContainedImage,
   Image,
-} from "../../back/image.ts";
-import { removeSpacesAndSplitByComma } from "../../utils.ts";
+} from '../../back/image.ts';
+import { removeSpacesAndSplitByComma } from '../../utils.ts';
 
 interface res {
   colors: number[][];
@@ -18,10 +29,10 @@ export const handler: Handlers = {
 
     const data = await req.formData();
     const [dataUrl, dataHeight, dataWidth, dataPalette] = [
-      data.get("url"),
-      data.get("height"),
-      data.get("width"),
-      data.get("palette"),
+      data.get('url'),
+      data.get('height'),
+      data.get('width'),
+      data.get('palette'),
     ];
 
     if (dataUrl && dataHeight && dataWidth && dataPalette) {
@@ -38,7 +49,7 @@ export const handler: Handlers = {
         const dominantColors = getDominantColorsFromContainedImage(
           image,
           width,
-          height,
+          height
         );
         response.colors = dominantColors;
       } else {

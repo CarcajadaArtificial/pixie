@@ -1,6 +1,6 @@
 # Changelog
 
-v0.1.1
+v0.1.2
 
 ## Comming Soon (v1.0.0)
 
@@ -40,8 +40,16 @@ v0.1.1
 
 ### Added
 
-- Missing documentation tasks
-  - `~/CHANGELOG.md`
+- Ignored obsidian files
+  - `~/.gitignore`
+
+- Added documentation banners
+  - `~/deps.ts`
+  - `~/utils.ts`
+  - `~/back/image.ts`
+  - `~/components/PixelPreview.tsx`
+  - `~/islands/MainForm.tsx`
+  - `~/routes/*`
 
 ### Removed
 

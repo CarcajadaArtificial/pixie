@@ -1,3 +1,12 @@
+//   __  __      _        ___
+//  |  \/  |__ _(_)_ _   | __|__ _ _ _ __
+//  | |\/| / _` | | ' \  | _/ _ \ '_| '  \
+//  |_|  |_\__,_|_|_||_| |_|\___/_| |_|_|_|
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * @module
+ */
 import { useEffect, useRef, useState } from "preact/hooks";
 import PixelPreview from "../components/pixelPreview.tsx";
 import { Input, TextArea } from "../deps.ts";
