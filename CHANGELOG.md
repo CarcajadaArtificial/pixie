@@ -1,6 +1,6 @@
 # Changelog
 
-v0.1.0
+v0.1.1
 
 ## Comming Soon (v1.0.0)
 
@@ -17,25 +17,31 @@ v0.1.0
 
 - [ ] Missing support for non-square results.
 
+### Documentation
+
+- [ ] `utils.ts`
+
+- back
+  - [ ] `image.ts`
+
+- components
+  - [ ] `PixelPreview.tsx`
+
+- islands
+  - [ ] `MainForm.tsx`
+
+- routes
+  - [ ] `api/compress.tsx`
+  - [ ] `api/imageOk.ts`
+  - [ ] `_app.tsx`
+  - [ ] `index.tsx`
+
 ## Changes
 
 ### Added
 
-- Api for compressing the image and it's color palette.
-  - `~/routes/api/compress.ts`
-
-- Api for verifying image url.
-  - `~/routes/api/imageOk.ts`
-
-- Main Form island for the apps inout form.
-  - `~/islands/MainForm.tsx`
-  - `~/routes/index.tsx`
-
-- Pixel Preview component, to see a preview of the resulting pixelated image.
-  - `~/components/PixelPreview.tsx`
-
-- Backend imagescript functions.
-  - `~/back/image.ts`
+- Missing documentation tasks
+  - `~/CHANGELOG.md`
 
 ### Removed
 
