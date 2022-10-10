@@ -1,32 +1,42 @@
 # Changelog
 
-v0.0.1
+v0.1.0
 
-## Comming Soon
+## Comming Soon (v1.0.0)
 
 ### Features
 
-- [ ] Compress the image using most common color.
+- [x] Compress the image using most common color.
 - [ ] Filter image using a color palette.
 - [ ] Preview image and aspect ratop before creating svg.
-- [ ] Add page logo.
-- [ ] Add credits and tech stack.
+- [ ] Page logo.
+- [ ] Credits and tech stack.
+- [ ] Download button for SVG result.
+
+### Issues
+
+- [ ] Missing support for non-square results.
 
 ## Changes
 
 ### Added
 
-- Changelog document
-  - `~/CHANGELOG.md`
+- Api for compressing the image and it's color palette.
+  - `~/routes/api/compress.ts`
 
-- Updated deps
-  - `~/deps.ts`
+- Api for verifying image url.
+  - `~/routes/api/imageOk.ts`
 
-- Utility functions
-  - `~/utils.ts`
+- Main Form island for the apps inout form.
+  - `~/islands/MainForm.tsx`
+  - `~/routes/index.tsx`
+
+- Pixel Preview component, to see a preview of the resulting pixelated image.
+  - `~/components/PixelPreview.tsx`
+
+- Backend imagescript functions.
+  - `~/back/image.ts`
 
 ### Removed
 
-- Page and Title components.
-  - `~/components/Page.tsx`
-  - `~/components/Title.tsx`
+- Nothing

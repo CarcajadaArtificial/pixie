@@ -1,5 +1,10 @@
-import Page from "../components/Page.tsx";
+import MainForm from "../islands/MainForm.tsx";
+import { Page } from "../deps.ts";
 
 export default function Home() {
-  return <Page title="🧚 Pixie"></Page>;
+  return (
+    <Page title="Pixie">
+      <MainForm />
+    </Page>
+  );
 }
