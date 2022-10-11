@@ -19,6 +19,7 @@ export default function MainForm() {
   const [paletteError, setPaletteError] = useState("");
   const [disabledSubmit, setDisabledSubmit] = useState(false);
   const [colorResults, setColorResults] = useState([]);
+  const [previewSizeMultiplier, setPreviewSizeMultiplier] = useState(100);
   const refForm = useRef<HTMLFormElement>(null);
   const refSubmitButton = useRef<HTMLInputElement>(null);
 
@@ -101,6 +102,7 @@ export default function MainForm() {
             required
             error={urlError}
             name="url"
+            value="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/fairy_1f9da.png"
           />
           <div class="grid grid-cols-2 gap-4">
             <Input
@@ -115,6 +117,7 @@ export default function MainForm() {
                 }
               }}
               name="height"
+              value="16"
             />
             <Input
               label="Width (px)"
@@ -128,6 +131,7 @@ export default function MainForm() {
                 }
               }}
               name="width"
+              value="16"
             />
           </div>
           <TextArea
@@ -141,8 +145,7 @@ export default function MainForm() {
               }
             }}
             name="palette"
-            value="#FFF"
-            disabled
+            value="#27b69d,#23a68f,#1aa48c,#17846f,#0f8b7d,#0e7e72,#0a876e,#097b64,#0a584d,#095046,#7e888e,#737c81,#383d40,#33373a,#272727,#018391,#017784,#db1e39,#c71b34,#fffee8,#ffb661,#fafafa,#e8e8e8,#d8d8d8,#e7f5f3,#5d6468,#4c5256,#31343b,#2f3335"
           />
           <Input
             disabled={disabledSubmit}
@@ -153,10 +156,35 @@ export default function MainForm() {
         </div>
       </form>
       {colorResults.length === 0 ? null : (
-        <PixelPreview
-          multiplier={500}
-          colors={colorResults}
-        />
+        <div>
+          <Input
+            label="Image Size"
+            type="number"
+            onKeyUp={(ev) =>
+              setPreviewSizeMultiplier(ev.currentTarget.valueAsNumber)}
+          />
+          <PixelPreview
+            multiplier={previewSizeMultiplier}
+            colors={colorResults}
+            id="result-preview"
+          />
+          <button
+            onClick={(ev) => {
+              const preview = document.getElementById("result-preview");
+              if (preview) {
+                const svg = preview.outerHTML;
+                const blob = new Blob([svg.toString()]);
+                const element = document.createElement("a");
+                element.download = "pixie.svg";
+                element.href = window.URL.createObjectURL(blob);
+                element.click();
+                element.remove();
+              }
+            }}
+          >
+            Download
+          </button>
+        </div>
       )}
     </div>
   );

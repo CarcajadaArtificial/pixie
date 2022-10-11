@@ -8,22 +8,30 @@
  * @module
  */
 
-interface PixelPreview {
+import { JSX } from "preact";
+import { applyDefaults } from "../deps.ts";
+
+interface PixelPreview extends JSX.HTMLAttributes<SVGSVGElement> {
   colors: number[][];
   multiplier: number;
 }
 
-export default function PixelPreview(props: PixelPreview) {
-  const sqrt = Math.sqrt(props.colors.length);
-  const mul = Math.floor(1 / sqrt * props.multiplier);
+export default function PixelPreview(props: Partial<PixelPreview>) {
+  const { colors, multiplier, ...svgProps } = applyDefaults<PixelPreview>({
+    colors: [],
+    multiplier: 100,
+  }, props);
+  const sqrt = Math.sqrt(colors.length);
+  const mul = Math.floor(1 / sqrt * multiplier);
 
   return (
     <svg
+      {...svgProps}
       height={sqrt * mul}
       width={sqrt * mul}
       xmlns="http://www.w3.org/2000/svg"
     >
-      {props.colors.map((color, index) => (
+      {colors.map((color, index) => (
         <rect
           width={1 * mul}
           height={1 * mul}

@@ -1,6 +1,6 @@
 # Changelog
 
-v0.1.3
+v0.1.4
 
 ## Comming Soon (v1.0.0)
 
@@ -11,7 +11,8 @@ v0.1.3
 - [ ] Preview image and aspect ratop before creating svg.
 - [ ] Page logo.
 - [ ] Credits and tech stack.
-- [ ] Download button for SVG result.
+- [x] Download button for SVG result.
+- [ ] Instructions.
 
 ### Issues
 
@@ -41,9 +42,11 @@ v0.1.3
 
 ### Added
 
-- Color compression functionality
-  - `~/utils.ts`
-  - `~/routes/api/compress.ts`
+- Download button
+  - `~/islands/MainForm.tsx`
+
+- Custom preview size input.
+  - `~/components/PixelPreview.tsx`
 
 ### Removed
 
