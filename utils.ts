@@ -95,3 +95,49 @@ export function mode(arr: string[]): string {
 
   return which[0];
 }
+
+/**
+ *
+ * @param hex
+ * @returns
+ */
+const hexToRgb = (hex: string) =>
+  hex
+    .replace(
+      /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
+      (_m, r, g, b) => '#' + r + r + g + g + b + b
+    )
+    .substring(1)
+    .match(/.{2}/g)!
+    .map((x) => parseInt(x, 16));
+
+/**
+ *
+ * @param mainRgb
+ * @param colorList
+ * @returns
+ */
+export function getClosestColor(
+  mainRgb: number[],
+  colorList: string[]
+): number[] {
+  const rgbColorList = colorList.map((color) => hexToRgb(color));
+
+  const colorDifferenceList = rgbColorList.map((color) =>
+    Math.floor(
+      Math.sqrt(
+        Math.pow(mainRgb[0] - color[0], 2) +
+          Math.pow(mainRgb[1] - color[1], 2) +
+          Math.pow(mainRgb[2] - color[2], 2)
+      )
+    )
+  );
+
+  const closestRgb = hexToRgb(
+    colorList[
+      colorDifferenceList.indexOf(Math.min.apply(Math, colorDifferenceList))
+    ]
+  );
+
+  return [...closestRgb, mainRgb[3]];
+}

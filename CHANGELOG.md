@@ -1,13 +1,13 @@
 # Changelog
 
-v0.1.2
+v0.1.3
 
 ## Comming Soon (v1.0.0)
 
 ### Features
 
 - [x] Compress the image using most common color.
-- [ ] Filter image using a color palette.
+- [x] Filter image using a color palette.
 - [ ] Preview image and aspect ratop before creating svg.
 - [ ] Page logo.
 - [ ] Credits and tech stack.
@@ -16,6 +16,7 @@ v0.1.2
 ### Issues
 
 - [ ] Missing support for non-square results.
+- [ ] Make optional the palette textarea. If null, do not filter the colors.
 
 ### Documentation
 
@@ -40,16 +41,9 @@ v0.1.2
 
 ### Added
 
-- Ignored obsidian files
-  - `~/.gitignore`
-
-- Added documentation banners
-  - `~/deps.ts`
+- Color compression functionality
   - `~/utils.ts`
-  - `~/back/image.ts`
-  - `~/components/PixelPreview.tsx`
-  - `~/islands/MainForm.tsx`
-  - `~/routes/*`
+  - `~/routes/api/compress.ts`
 
 ### Removed
 

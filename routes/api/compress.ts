@@ -13,9 +13,8 @@ import { Handlers } from '$fresh/server.ts';
 import {
   decodeImageFromUrl,
   getDominantColorsFromContainedImage,
-  Image,
 } from '../../back/image.ts';
-import { removeSpacesAndSplitByComma } from '../../utils.ts';
+import { removeSpacesAndSplitByComma, getClosestColor } from '../../utils.ts';
 
 interface res {
   colors: number[][];
@@ -45,13 +44,14 @@ export const handler: Handlers = {
       const image = await decodeImageFromUrl(url.toString());
 
       if (image) {
-        console.log(Image.colorToRGBA(image.getPixelAt(1, 1)));
         const dominantColors = getDominantColorsFromContainedImage(
           image,
           width,
           height
         );
-        response.colors = dominantColors;
+        response.colors = dominantColors.map((color) =>
+          getClosestColor(color, palette)
+        );
       } else {
         // Respond an error decoding image
       }
