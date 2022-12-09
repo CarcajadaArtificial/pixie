@@ -9,7 +9,7 @@
  */
 import { useEffect, useRef, useState } from "preact/hooks";
 import PixelPreview from "../components/pixelPreview.tsx";
-import { Input, TextArea } from "../deps.ts";
+import { Button, Input, Separator, TextArea } from "../deps.ts";
 import { isValidHexColor, removeSpacesAndSplitByComma } from "../utils.ts";
 
 export default function MainForm() {
@@ -103,6 +103,7 @@ export default function MainForm() {
             error={urlError}
             name="url"
             value="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/fairy_1f9da.png"
+            maxWidth
           />
           <div class="grid grid-cols-2 gap-4">
             <Input
@@ -145,7 +146,8 @@ export default function MainForm() {
               }
             }}
             name="palette"
-            value="#27b69d,#23a68f,#1aa48c,#17846f,#0f8b7d,#0e7e72,#0a876e,#097b64,#0a584d,#095046,#7e888e,#737c81,#383d40,#33373a,#272727,#018391,#017784,#db1e39,#c71b34,#fffee8,#ffb661,#fafafa,#e8e8e8,#d8d8d8,#e7f5f3,#5d6468,#4c5256,#31343b,#2f3335"
+            value="#dfd9ff,#afbbfa,#7aadf5,#1f84cc,#1262b3,#000066,#030f33,#0f474d,#00806a,#089969,#12b362,#9eed77,#d0fa7d,#f7ff99,#fff7cc,#ffea80,#fabb64,#f59149,#cc5f29,#66050d,#b31b34,#e62e4d,#f7577f,#fc7ea8,#fa96c8,#e9abf5,#d0bbfa,#a37af5,#6246eb,#380899,#088199,#1fcccc,#7ae0f5,#b36b24,#400020,#400020,#400020"
+            maxWidth
           />
           <Input
             disabled={disabledSubmit}
@@ -157,6 +159,7 @@ export default function MainForm() {
       </form>
       {colorResults.length === 0 ? null : (
         <div>
+          <Separator />
           <Input
             label="Image Size"
             type="number"
@@ -168,7 +171,8 @@ export default function MainForm() {
             colors={colorResults}
             id="result-preview"
           />
-          <button
+          <br />
+          <Button
             onClick={(ev) => {
               const preview = document.getElementById("result-preview");
               if (preview) {
@@ -183,7 +187,7 @@ export default function MainForm() {
             }}
           >
             Download
-          </button>
+          </Button>
         </div>
       )}
     </div>

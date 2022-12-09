@@ -1,6 +1,23 @@
 # Changelog
 
-v0.1.4
+## v0.1.5
+
+### Added
+
+- Added the page component
+  - `~/components/Page.tsx`
+
+- Updated app to latest components
+  - `~/routes/_app.tsx`
+  - `~/deps.ts`
+
+- New components to the MainForm island and index route
+  - `~/routes/index.tsx`
+  - `~/islands/MainForm.tsx`
+
+### Removed
+
+- Nothing
 
 ## Comming Soon (v1.0.0)
 
@@ -37,17 +54,3 @@ v0.1.4
   - [ ] `api/imageOk.ts`
   - [ ] `_app.tsx`
   - [ ] `index.tsx`
-
-## Changes
-
-### Added
-
-- Download button
-  - `~/islands/MainForm.tsx`
-
-- Custom preview size input.
-  - `~/components/PixelPreview.tsx`
-
-### Removed
-
-- Nothing

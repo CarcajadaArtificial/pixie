@@ -16,6 +16,10 @@ export default function App({ Component }: AppProps) {
     <>
       <Head>
         <title>Pixie</title>
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/CarcajadaArtificial/ana-components@0.0.29/static/styles.css"
+        />
       </Head>
       <Component />
     </>

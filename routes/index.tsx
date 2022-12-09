@@ -9,12 +9,23 @@
  */
 
 import MainForm from "../islands/MainForm.tsx";
-import { Page } from "../deps.ts";
+import Page from "../components/Page.tsx";
+import { Card, Header, Layout, Main, Navigation, Text } from "../deps.ts";
 
 export default function Home() {
   return (
-    <Page title="Pixie">
-      <MainForm />
+    <Page>
+      <Header>
+        <Text type="title">Pixie</Text>
+        <Text>doc.description</Text>
+      </Header>
+      <Main>
+        <Layout type="left">
+          <Card>
+            <MainForm />
+          </Card>
+        </Layout>
+      </Main>
     </Page>
   );
 }
