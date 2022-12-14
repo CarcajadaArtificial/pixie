@@ -22,21 +22,21 @@ export default function (props: iInputUrl) {
     <div>
       <div class="grid grid-cols-2 gap-4">
         <Input
-          label="Height"
-          type="number"
-          error={props.heightError}
-          onfocusout={props.heightOnfocusout}
-          name="height"
-          refInput={props.refHeight}
-          required
-        />
-        <Input
           label="Width"
           type="number"
           error={props.widthError}
           onfocusout={props.widthOnfocusout}
           name="width"
           refInput={props.refWidth}
+          required
+        />
+        <Input
+          label="Height"
+          type="number"
+          error={props.heightError}
+          onfocusout={props.heightOnfocusout}
+          name="height"
+          refInput={props.refHeight}
           required
         />
       </div>

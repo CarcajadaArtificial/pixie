@@ -1,36 +1,33 @@
 # Changelog
 
-## v0.1.8
+## v0.1.10
 
 ### Added
 
-- A revamped MainForm in index.
-  `~/routes/indes.tsx`
-  `~/islands/MainForm.tsx`
-  `~/components/InputSize.tsx`
-  `~/components/InputUrl.tsx`
+- Compressing feature given the size
+  - `~/routes/api/compress.ts`
+  - `~/islands/MainForm.tsx`
+  - `~/component/PixelPreview.tsx`
 
-- ImageOk now returns recommendations
-  - `~/routes/api/imageOk.ts`
+- `cropImageFromContainedSize()` and `pixelateCroppedImage()`
+  `~/back/image.ts`
 
-- Cleaner functions
-  - `~/back/image.ts`
-
-- Aspect Ratio fixes
-  - `~/back/aspectRatio.ts`
+- InputSize component fix
+  - `~/components/InputSize.tsx`
 
 ## Comming Soon (v1.0.0)
 
 ### Features
 
-- [ ] Automatic aspect ratio calculator
-  - [ ] Add custom values for size
-  - [ ] Size suggestions for quick customization
-  - [ ] Preview the image's crop
+- [x] Automatic aspect ratio calculator
+  - [x] Add custom values for size
+  - [x] Size suggestions for quick customization
+  - [x] Preview the image's crop
+  - [ ] Download button for the pixelated preview.
 
 - [ ] Compress the image using Dithering
   - [ ] Add a custom palette selector for overriding the colors.
-  - [ ] Convert the resulting image into an svg.
+  - [ ] Feature at least five existing dithering algorithms.
 
 - Misc
   - [ ] Instructions
@@ -43,9 +40,13 @@
 
 - back
   - [ ] `image.ts`
+  - [x] `aspectRatio.ts`
 
 - components
   - [ ] `PixelPreview.tsx`
+  - [ ] `InputSize.tsx`
+  - [ ] `InputUrl.tsx`
+  - [ ] Comming soon `InputPalette.tsx`
 
 - islands
   - [ ] `MainForm.tsx`
@@ -55,3 +56,5 @@
   - [ ] `api/imageOk.ts`
   - [ ] `_app.tsx`
   - [ ] `index.tsx`
+  - [ ] Comming soon `app.tsx`
+  - [ ] Comming soon `about.tsx`

@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import { Card, Input, Layout, Text, TextArea } from "../deps.ts";
 import { isValidHexColor, removeSpacesAndSplitByComma } from "../utils.ts";
 import InputUrl from "../components/InputUrl.tsx";
+import PixelPreview from "../components/PixelPreview.tsx";
 import InputSize from "../components/InputSize.tsx";
 import { Size } from "../types.ts";
 
@@ -21,28 +22,57 @@ interface iMainForm {
 }
 
 export default function (props: iMainForm) {
+  // ---------------------------------------------------------------------------------------------------
+  //   _  _          _
+  //  | || |___  ___| |__ ___
+  //  | __ / _ \/ _ \ / /(_-<
+  //  |_||_\___/\___/_\_\/__/
+  //
+  // ---------------------------------------------------------------------------------------------------
   // Url
-  const refUrlInput = useRef<HTMLInputElement>(null);
+  // - Errors
   const [urlError, setUrlError] = useState("");
-  const [stepUrlDone, setStepUrlDone] = useState(false);
+  // - Input Values
+  const [imageUrl, setImageUrl] = useState("");
+  // - Input References
+  const refUrlInput = useRef<HTMLInputElement>(null);
+  // - Fetched values
   const [urlImageWidth, setUrlImageWidth] = useState(0);
   const [urlImageHeight, setUrlImageHeight] = useState(0);
+  const [sizeRecommendations, setSizeRecommendations] = useState<Size[]>([]);
+  // - Step Done
+  const [stepUrlDone, setStepUrlDone] = useState(false);
+  //   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
   // Size
+  // - Errors
   const [widthError, setWidthError] = useState("");
   const [heightError, setHeightError] = useState("");
-  const [sizeRecommendations, setSizeRecommendations] = useState<Size[]>([]);
+  // - Input Values
+  const [widthInputValue, setWidthInputValue] = useState(0);
+  const [heightInputValue, setHeightInputValue] = useState(0);
+  // - Input References
   const refHeightInput = useRef<HTMLInputElement>(null);
   const refWidthInput = useRef<HTMLInputElement>(null);
+  // - Fetched values
+  const [croppedImageSrc, setCroppedImageSrc] = useState("");
+  const [compressedImageColors, setCompressedImageColors] = useState<
+    number[][]
+  >([[0, 0, 0, 0]]);
+  // - Step Done
   const [stepSizeDone, setStepSizeDone] = useState(false);
+  //   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
   // Palette
   const [paletteError, setPaletteError] = useState("");
   const refPaletteInput = useRef<HTMLTextAreaElement>(null);
+  //   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
   // Submit
   const [disabledSubmit, setDisabledSubmit] = useState(true);
   const refSubmitButton = useRef<HTMLInputElement>(null);
+  //   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
   // Form
   const refForm = useRef<HTMLFormElement>(null);
 
+  //   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
   useEffect(() => {
     if (
       [urlError, widthError, heightError, paletteError].filter((errorMessage) =>
@@ -55,9 +85,20 @@ export default function (props: iMainForm) {
     }
   }, [urlError, widthError, heightError, paletteError]);
 
+  // ---------------------------------------------------------------------------------------------------
+  //   _  _              _ _
+  //  | || |__ _ _ _  __| | |___ _ _ ___
+  //  | __ / _` | ' \/ _` | / -_) '_(_-<
+  //  |_||_\__,_|_||_\__,_|_\___|_| /__/
+  //
+  // ---------------------------------------------------------------------------------------------------
   const handle = {
     /** */
     urlCheck: async (url: string) => {
+      if (url === "") {
+        return;
+      }
+      setImageUrl(url);
       await fetch("/api/imageOk", {
         method: "POST",
         mode: "no-cors",
@@ -93,29 +134,55 @@ export default function (props: iMainForm) {
         !noGetSizePreview
       ) {
         handle.getSizePreview(
-          refWidthInput.current?.value as string,
-          refHeightInput.current?.value as string,
+          refWidthInput.current?.valueAsNumber!,
+          refHeightInput.current?.valueAsNumber!,
         );
       }
     },
     /** */
     recommendationsClick: (dataSize?: string) => {
       const size = dataSize ? dataSize.split(",") as string[] : ["0", "0"];
-      (refHeightInput.current as HTMLInputElement).value = size[0];
-      handle.sizeCheck(size[0], setWidthError, urlImageWidth, true);
-      (refWidthInput.current as HTMLInputElement).value = size[1];
-      handle.sizeCheck(size[1], setHeightError, urlImageHeight, true);
+      (refHeightInput.current as HTMLInputElement).value = size[1];
+      (refWidthInput.current as HTMLInputElement).value = size[0];
+      handle.sizeCheck(
+        size[0],
+        setHeightError,
+        urlImageHeight,
+        true,
+      );
+      handle.sizeCheck(
+        size[1],
+        setWidthError,
+        urlImageWidth,
+        true,
+      );
       refPaletteInput.current?.focus();
-      handle.getSizePreview(size[0], size[1]);
+      handle.getSizePreview(parseInt(size[0]), parseInt(size[1]));
     },
     /** */
-    getSizePreview: (
-      inputWidthValue: string,
-      inputHeightValue: string,
+    getSizePreview: async (
+      inputWidthValue: number,
+      inputHeightValue: number,
     ) => {
+      setWidthInputValue(inputWidthValue);
+      setHeightInputValue(inputHeightValue);
       // Fetch the image compression
+      await fetch("/api/compress", {
+        method: "POST",
+        body: JSON.stringify({
+          url: imageUrl,
+          width: inputWidthValue,
+          height: inputHeightValue,
+        }),
+      }).then((res) => res.json())
+        .then((data) => {
+          setCroppedImageSrc(data.src);
+          setCompressedImageColors(data.compressedColos);
+        });
+      // Set cropped Image Src
       setStepSizeDone(true);
     },
+    /** */
     paletteCheck: (value: string) => {
       if (value === "") {
         return;
@@ -129,6 +196,7 @@ export default function (props: iMainForm) {
       });
       setPaletteError(allOk ? "" : "Invalid color values.");
     },
+    /** */
     formSubmit: () => {
       if (refForm.current) {
         const payload = new FormData(refForm.current);
@@ -142,6 +210,13 @@ export default function (props: iMainForm) {
     },
   };
 
+  // ---------------------------------------------------------------------------------------------------
+  //   ___             _
+  //  | _ \___ _ _  __| |___ _ _
+  //  |   / -_) ' \/ _` / -_) '_|
+  //  |_|_\___|_||_\__,_\___|_|
+  //
+  // ---------------------------------------------------------------------------------------------------
   return (
     <Layout type="center">
       <Card>
@@ -157,18 +232,12 @@ export default function (props: iMainForm) {
             <Text type="heading">Step 1: Choose an image</Text>
             <Text>{props.docStepUrl}</Text>
             <InputUrl
-              onfocusout={(ev) => {
-                if (ev.currentTarget.value !== "") {
-                  handle.urlCheck(ev.currentTarget.value);
-                }
-              }}
+              onfocusout={(ev) => handle.urlCheck(ev.currentTarget.value)}
               error={urlError}
               refInput={refUrlInput}
             />
             <div class={stepUrlDone ? "" : "hidden"}>
-              <div class="w-full">
-                <img src={refUrlInput.current?.value} />
-              </div>
+              <img class="max-h-80" src={imageUrl} />
               <div class="mt-4">
                 <Text noMargins>Width:{` ${urlImageWidth}px`}</Text>
                 <Text noMargins>Height:{` ${urlImageHeight}px`}</Text>
@@ -199,6 +268,19 @@ export default function (props: iMainForm) {
               refWidth={refWidthInput}
               recommendations={sizeRecommendations}
             />
+            <div class={stepSizeDone ? "flex flex-col mt-4 gap-2" : "hidden"}>
+              <img
+                class="max-h-80"
+                /** @todo trun this into an override class for max-w-fit */
+                style="max-width: fit-content;"
+                src={croppedImageSrc}
+              />
+              <PixelPreview
+                height={heightInputValue}
+                width={widthInputValue}
+                colors={compressedImageColors}
+              />
+            </div>
           </div>
           <div
             class={stepSizeDone ? "" : stepUrlDone ? "opacity-10" : "hidden"}

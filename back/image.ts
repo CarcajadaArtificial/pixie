@@ -87,3 +87,84 @@ function getImageTrueColor(image: Image): number[] {
       : [0, 0, 0];
   return [...dominantColor, avg / (height * width) / 255];
 }
+
+/**
+ *
+ * @param image
+ * @param inputWidth
+ * @param inputHeight
+ */
+export function cropImageFromContainedSize(
+  image: Image,
+  inputWidth: number,
+  inputHeight: number
+): Promise<Image> {
+  return new Promise((resolve) => {
+    const [decodedWidth, decodedHeight]: [number, number] = [
+      image.width!,
+      image.height!,
+    ];
+
+    // Crops the image
+    const precontainedImage = new Image(inputWidth, inputHeight);
+    const containedImage = precontainedImage?.contain(
+      decodedWidth,
+      decodedHeight
+    );
+    const [containedWidth, containedHeight] = [
+      containedImage.width,
+      containedImage.height,
+    ];
+
+    if (decodedHeight === containedHeight && decodedWidth > containedWidth) {
+      // Vertical crop
+      const centeringMove = (decodedWidth - containedWidth) / 2;
+      image.crop(centeringMove, 0, containedWidth, containedHeight);
+    } else if (
+      decodedWidth === containedWidth &&
+      decodedHeight > containedHeight
+    ) {
+      // Horizontal crop
+      const centeringMove = (decodedHeight - containedHeight) / 2;
+      image.crop(0, centeringMove, containedWidth, containedHeight);
+    } else if (
+      decodedWidth === containedWidth &&
+      decodedHeight === containedHeight
+    ) {
+      // No crop
+    } else {
+      // Wtf
+    }
+
+    resolve(image);
+  });
+}
+
+/**
+ *
+ * @param image
+ * @param pixelsWidth
+ * @param pixelsHeight
+ */
+export async function pixelateCroppedImage(
+  image: Image,
+  pixelsWidth: number,
+  pixelsHeight: number
+) {
+  const chunkSize = image.width / pixelsWidth;
+  const pixelColors: number[][] = [];
+
+  for (let i = 0; i < pixelsHeight; i++) {
+    for (let j = 0; j < pixelsWidth; j++) {
+      pixelColors.push(
+        getImageTrueColor(
+          await image
+            .clone()
+            .crop(j * chunkSize, i * chunkSize, chunkSize, chunkSize)
+        )
+      );
+    }
+  }
+
+  return pixelColors;
+}

@@ -13,34 +13,37 @@ import { applyDefaults } from "../deps.ts";
 
 interface PixelPreview extends JSX.HTMLAttributes<SVGSVGElement> {
   colors: number[][];
+  width: number;
+  height: number;
   multiplier: number;
 }
 
 export default function PixelPreview(props: Partial<PixelPreview>) {
-  const { colors, multiplier, ...svgProps } = applyDefaults<PixelPreview>({
-    colors: [],
-    multiplier: 100,
+  const { colors, height, width, multiplier, ...svgProps } = applyDefaults<
+    PixelPreview
+  >({
+    colors: [[0, 0, 0, 0]],
+    multiplier: 10,
+    height: 0,
+    width: 0,
   }, props);
-  const sqrt = Math.sqrt(colors.length);
-  const mul = Math.floor(1 / sqrt * multiplier);
 
   return (
     <svg
       {...svgProps}
-      height={sqrt * mul}
-      width={sqrt * mul}
+      height={height * multiplier}
+      width={width * multiplier}
       xmlns="http://www.w3.org/2000/svg"
     >
-      {colors.map((color, index) => (
+      {height === 0 || width === 0 ? null : colors.map((color, index) => (
         <rect
-          width={1 * mul}
-          height={1 * mul}
+          width={1 * multiplier}
+          height={1 * multiplier}
           fill={`rgba(${color[0]},${color[1]},${color[2]},${
             color[3].toFixed(2)
           })`}
-          x={(index % sqrt) * mul}
-          y={Math.floor(index / sqrt) *
-            mul}
+          x={(index % width) * multiplier}
+          y={Math.floor(index / width) * multiplier}
         />
       ))}
     </svg>

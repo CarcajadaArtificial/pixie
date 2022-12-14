@@ -4,7 +4,10 @@
 //  /_/ \_\/__/ .__/\___\__|\__|_|_\__,_|\__|_\___/
 //            |_|
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/**
+ * This module contains all the functions that work with the math that surrounds image sizes and aspect ratios.
+ * @module
+ */
 import { Size } from '../types.ts';
 
 /**

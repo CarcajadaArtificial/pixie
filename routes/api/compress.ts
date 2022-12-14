@@ -12,53 +12,41 @@
 import { Handlers } from '$fresh/server.ts';
 import {
   decodeImageFromUrl,
-  getDominantColorsFromContainedImage,
+  convertBlobToBase64,
+  cropImageFromContainedSize,
+  pixelateCroppedImage,
 } from '../../back/image.ts';
-import { removeSpacesAndSplitByComma, getClosestColor } from '../../utils.ts';
-
-interface res {
-  colors: number[][];
-}
 
 export const handler: Handlers = {
   async POST(req, _ctx) {
-    const response = {
-      colors: [],
-    } as res;
-
-    const data = await req.formData();
-    const [dataUrl, dataHeight, dataWidth, dataPalette] = [
-      data.get('url'),
-      data.get('height'),
-      data.get('width'),
-      data.get('palette'),
+    const data = await req.json();
+    const imageDecoded = await decodeImageFromUrl(data.url.toString());
+    const [decodedWidth, decodedHeight]: [number, number] = [
+      imageDecoded?.width!,
+      imageDecoded?.height!,
     ];
 
-    if (dataUrl && dataHeight && dataWidth && dataPalette) {
-      const [url, height, width, palette] = [
-        dataUrl.toString(),
-        parseInt(dataHeight.toString()),
-        parseInt(dataWidth.toString()),
-        removeSpacesAndSplitByComma(dataPalette.toString()),
-      ];
-      const image = await decodeImageFromUrl(url.toString());
+    // Crops image
+    const croppedImage = await cropImageFromContainedSize(
+      imageDecoded!,
+      data.width,
+      data.height
+    );
+    const compressedColos = await pixelateCroppedImage(
+      croppedImage,
+      data.width,
+      data.height
+    );
 
-      if (image) {
-        const dominantColors = getDominantColorsFromContainedImage(
-          image,
-          width,
-          height
-        );
-        response.colors = dominantColors.map((color) =>
-          getClosestColor(color, palette)
-        );
-      } else {
-        // Respond an error decoding image
-      }
-    } else {
-      // Respond an error getting form data
-    }
+    // Converts cropped image to base 64 string.
+    const imageEncoded = await croppedImage?.encode();
+    const imageBase64 = await convertBlobToBase64(
+      new Blob([await imageEncoded!.buffer])
+    );
 
-    return new Response(JSON.stringify(response));
+    // Return array of RGBA[] containing the pixel art svg with true colors.
+    return new Response(
+      JSON.stringify({ src: imageBase64, compressedColos: compressedColos })
+    );
   },
 };
