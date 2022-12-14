@@ -85,13 +85,16 @@ function getRecommendedRectangularRatios(comparingRatio: number) {
 }
 
 /**
- * This function uses the `recommendedLengths` list to calculate all possibles square recommendations
+ * This function uses the `recommendedLengths` list to calculate all possibles square recommendations.
+ * @param comparingLength The original image's side length, recommendations must not be larger than this.
  * @returns A static list of Size objects representing squares.
  */
-function getRecommendedSquareRatios() {
-  return recommendedLengths.map((recommendedLength) =>
-    calcRatio(recommendedLength, recommendedLength, 1)
-  );
+function getRecommendedSquareRatios(comparingLength: number) {
+  return recommendedLengths
+    .map((recommendedLength) =>
+      calcRatio(recommendedLength, recommendedLength, 1)
+    )
+    .filter((recommendedLength) => recommendedLength.width < comparingLength);
 }
 
 /**
@@ -101,6 +104,6 @@ function getRecommendedSquareRatios() {
 export function getRecommendations(width: number, height: number) {
   const comparingRatio = calcRatio(width, height);
   return comparingRatio.ratio === 1
-    ? getRecommendedSquareRatios()
+    ? getRecommendedSquareRatios(width)
     : getRecommendedRectangularRatios(comparingRatio.ratio);
 }

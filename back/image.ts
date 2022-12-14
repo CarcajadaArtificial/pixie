@@ -10,8 +10,23 @@
  */
 
 import { decode, Image } from 'https://deno.land/x/imagescript@v1.2.14/mod.ts';
-export { Image } from 'https://deno.land/x/imagescript@v1.2.14/mod.ts';
-import { mode, contain } from '../utils.ts';
+import { mode } from '../utils.ts';
+
+/**
+ *
+ * @param url
+ * @returns
+ */
+export async function decodeImageFromBuffer(
+  buffer: ArrayBuffer
+): Promise<Image | null> {
+  try {
+    const imageDecoded = await decode(buffer);
+    return imageDecoded instanceof Image ? imageDecoded : null;
+  } catch (_error) {
+    return null;
+  }
+}
 
 /**
  *
@@ -24,12 +39,26 @@ export async function decodeImageFromUrl(url: string): Promise<Image | null> {
     .catch(() => null);
 
   if (imageFetch) {
-    const imageBuffer = await imageFetch.arrayBuffer();
-    const imageDecoded = await decode(imageBuffer);
-    return imageDecoded instanceof Image ? imageDecoded : null;
+    return decodeImageFromBuffer(await imageFetch.arrayBuffer());
   } else {
     return null;
   }
+}
+
+/**
+ *
+ * @param blob
+ * @returns
+ */
+export function convertBlobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+      resolve(typeof reader.result === 'string' ? reader.result : '');
+    };
+    reader.readAsDataURL(blob);
+  });
 }
 
 /**
@@ -57,57 +86,4 @@ function getImageTrueColor(image: Image): number[] {
           .map((stringColor) => parseInt(stringColor))
       : [0, 0, 0];
   return [...dominantColor, avg / (height * width) / 255];
-}
-
-/**
- *
- * @param image
- * @param width
- * @param height
- * @returns
- */
-export function getDominantColorsFromContainedImage(
-  image: Image,
-  width: number,
-  height: number
-): number[][] {
-  const [imageHeight, imageWidth] = [image.height, image.width];
-  const [containedHeight, containedWidth] = contain(
-    width,
-    height,
-    imageWidth,
-    imageHeight
-  );
-  const containCrop = image
-    .clone()
-    .crop(
-      (imageWidth - containedWidth) / 2,
-      (imageHeight - containedHeight) / 2,
-      containedWidth,
-      containedHeight
-    );
-
-  const [chunkHeight, chunkWidth] = [
-    containCrop.height / height,
-    containCrop.width / width,
-  ];
-
-  const dominantColors = [];
-
-  for (let iHeight = 0; iHeight < height; iHeight++) {
-    for (let iWidth = 0; iWidth < width; iWidth++) {
-      const croppedChunk = containCrop
-        .clone()
-        .crop(
-          chunkWidth * iWidth,
-          chunkHeight * iHeight,
-          chunkWidth,
-          chunkHeight
-        );
-
-      dominantColors.push(getImageTrueColor(croppedChunk));
-    }
-  }
-
-  return dominantColors;
 }

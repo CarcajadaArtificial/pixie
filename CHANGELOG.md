@@ -1,18 +1,23 @@
 # Changelog
 
-## v0.1.7
+## v0.1.8
 
 ### Added
 
-- Docs
-  - `~/docs/index/description.md`
-  - `~/docs/index/stepPalette.md`
-  - `~/docs/index/stepSize.md`
-  - `~/docs/index/stepUrl.md`
+- A revamped MainForm in index.
+  `~/routes/indes.tsx`
+  `~/islands/MainForm.tsx`
+  `~/components/InputSize.tsx`
+  `~/components/InputUrl.tsx`
 
-- Aspect Ratio functions
+- ImageOk now returns recommendations
+  - `~/routes/api/imageOk.ts`
+
+- Cleaner functions
+  - `~/back/image.ts`
+
+- Aspect Ratio fixes
   - `~/back/aspectRatio.ts`
-  - `~/types.ts`
 
 ## Comming Soon (v1.0.0)
 

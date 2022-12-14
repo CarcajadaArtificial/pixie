@@ -8,65 +8,40 @@
  * @module
  */
 import { useEffect, useRef, useState } from "preact/hooks";
-import PixelPreview from "../components/pixelPreview.tsx";
-import { Button, Input, Separator, TextArea } from "../deps.ts";
+import { Card, Input, Layout, Text, TextArea } from "../deps.ts";
 import { isValidHexColor, removeSpacesAndSplitByComma } from "../utils.ts";
+import InputUrl from "../components/InputUrl.tsx";
+import InputSize from "../components/InputSize.tsx";
+import { Size } from "../types.ts";
 
-export default function MainForm() {
+interface iMainForm {
+  docStepUrl: string;
+  docStepSize: string;
+  docStepPalette: string;
+}
+
+export default function (props: iMainForm) {
+  // Url
+  const refUrlInput = useRef<HTMLInputElement>(null);
   const [urlError, setUrlError] = useState("");
+  const [stepUrlDone, setStepUrlDone] = useState(false);
+  const [urlImageWidth, setUrlImageWidth] = useState(0);
+  const [urlImageHeight, setUrlImageHeight] = useState(0);
+  // Size
   const [widthError, setWidthError] = useState("");
   const [heightError, setHeightError] = useState("");
+  const [sizeRecommendations, setSizeRecommendations] = useState<Size[]>([]);
+  const refHeightInput = useRef<HTMLInputElement>(null);
+  const refWidthInput = useRef<HTMLInputElement>(null);
+  const [stepSizeDone, setStepSizeDone] = useState(false);
+  // Palette
   const [paletteError, setPaletteError] = useState("");
-  const [disabledSubmit, setDisabledSubmit] = useState(false);
-  const [colorResults, setColorResults] = useState([]);
-  const [previewSizeMultiplier, setPreviewSizeMultiplier] = useState(100);
-  const refForm = useRef<HTMLFormElement>(null);
+  const refPaletteInput = useRef<HTMLTextAreaElement>(null);
+  // Submit
+  const [disabledSubmit, setDisabledSubmit] = useState(true);
   const refSubmitButton = useRef<HTMLInputElement>(null);
-
-  const handle = {
-    /** */
-    urlFocusOut: async (url: string) => {
-      await fetch("/api/imageOk", {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify({ url: url }),
-      }).then(async (res) => {
-        const { ok } = await res.json();
-        setUrlError(ok ? "" : "Invalid image, try another url.");
-      });
-    },
-    /** */
-    heightFocusOut: (value: number) =>
-      setHeightError(
-        (value <= 0 || value > 128) ? "Value must be between 1 and 128." : "",
-      ),
-    /** */
-    widthFocusOut: (value: number) =>
-      setWidthError(
-        (value <= 0 || value > 128) ? "Value must be between 1 and 128." : "",
-      ),
-    /** */
-    paletteFocusOut: (value: string) => {
-      let allOk = true;
-      removeSpacesAndSplitByComma(value).forEach((color) => {
-        if (!isValidHexColor(color)) {
-          allOk = false;
-        }
-      });
-      setPaletteError(allOk ? "" : "Invalid color values.");
-    },
-    /** */
-    formSubmit: async () => {
-      if (refForm.current) {
-        const payload = new FormData(refForm.current);
-        await fetch("/api/compress", {
-          method: "POST",
-          body: payload,
-        }).then((res) => res.json())
-          .then((data) => setColorResults(data.colors));
-      }
-    },
-  };
+  // Form
+  const refForm = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (
@@ -80,116 +55,175 @@ export default function MainForm() {
     }
   }, [urlError, widthError, heightError, paletteError]);
 
+  const handle = {
+    /** */
+    urlCheck: async (url: string) => {
+      await fetch("/api/imageOk", {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({ url: url }),
+      }).then(async (res) => {
+        const { ok, width, height, recommendations } = await res.json();
+        setUrlImageHeight(height);
+        setUrlImageWidth(width);
+        setSizeRecommendations(recommendations);
+        setStepUrlDone(ok);
+        setUrlError(ok ? "" : "Invalid image, try another url.");
+      });
+    },
+    /** */
+    sizeCheck: (
+      value: string,
+      errorCb: Function,
+      imageUrlSize: number,
+      noGetSizePreview?: boolean,
+    ) => {
+      if (value === "") {
+        return;
+      }
+      const numValue = parseInt(value);
+      errorCb(
+        (numValue <= 0 || numValue > 320 || numValue > imageUrlSize)
+          ? "Value must be between 1 and 320, and equal or lower than the image's original size."
+          : "",
+      );
+      if (
+        refHeightInput.current?.value !== "" &&
+        refWidthInput.current?.value !== "" &&
+        !noGetSizePreview
+      ) {
+        handle.getSizePreview(
+          refWidthInput.current?.value as string,
+          refHeightInput.current?.value as string,
+        );
+      }
+    },
+    /** */
+    recommendationsClick: (dataSize?: string) => {
+      const size = dataSize ? dataSize.split(",") as string[] : ["0", "0"];
+      (refHeightInput.current as HTMLInputElement).value = size[0];
+      handle.sizeCheck(size[0], setWidthError, urlImageWidth, true);
+      (refWidthInput.current as HTMLInputElement).value = size[1];
+      handle.sizeCheck(size[1], setHeightError, urlImageHeight, true);
+      refPaletteInput.current?.focus();
+      handle.getSizePreview(size[0], size[1]);
+    },
+    /** */
+    getSizePreview: (
+      inputWidthValue: string,
+      inputHeightValue: string,
+    ) => {
+      // Fetch the image compression
+      setStepSizeDone(true);
+    },
+    paletteCheck: (value: string) => {
+      if (value === "") {
+        return;
+      }
+
+      let allOk = true;
+      removeSpacesAndSplitByComma(value).forEach((color) => {
+        if (!isValidHexColor(color)) {
+          allOk = false;
+        }
+      });
+      setPaletteError(allOk ? "" : "Invalid color values.");
+    },
+    formSubmit: () => {
+      if (refForm.current) {
+        const payload = new FormData(refForm.current);
+        console.log(payload.get("palette"));
+        // await fetch("/api/compress", {
+        //   method: "POST",
+        //   body: payload,
+        // }).then((res) => res.json())
+        //   .then((data) => setColorResults(data.colors));
+      }
+    },
+  };
+
   return (
-    <div>
-      <form
-        ref={refForm}
-        onSubmit={async (ev) => {
-          ev.preventDefault();
-          await handle.formSubmit();
-        }}
-      >
-        <div class="flex flex-col gap-4 text-sm">
-          <Input
-            label="Image url [PNG, JPG]"
-            type="url"
-            placeholder="https://.../image.jpg"
-            onfocusout={(ev) => {
-              if (ev.currentTarget.value !== "") {
-                handle.urlFocusOut(ev.currentTarget.value);
-              }
-            }}
-            required
-            error={urlError}
-            name="url"
-            value="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/325/fairy_1f9da.png"
-            maxWidth
-          />
-          <div class="grid grid-cols-2 gap-4">
-            <Input
-              label="Height (px)"
-              type="number"
-              placeholder="16"
-              required
-              error={heightError}
+    <Layout type="center">
+      <Card>
+        <form
+          ref={refForm}
+          class="grid gap-10"
+          onSubmit={async (ev) => {
+            ev.preventDefault();
+            await handle.formSubmit();
+          }}
+        >
+          <div>
+            <Text type="heading">Step 1: Choose an image</Text>
+            <Text>{props.docStepUrl}</Text>
+            <InputUrl
               onfocusout={(ev) => {
                 if (ev.currentTarget.value !== "") {
-                  handle.heightFocusOut(ev.currentTarget.valueAsNumber);
+                  handle.urlCheck(ev.currentTarget.value);
                 }
               }}
-              name="height"
-              value="16"
+              error={urlError}
+              refInput={refUrlInput}
             />
-            <Input
-              label="Width (px)"
-              type="number"
-              placeholder="16"
-              required
-              error={widthError}
-              onfocusout={(ev) => {
-                if (ev.currentTarget.value !== "") {
-                  handle.widthFocusOut(ev.currentTarget.valueAsNumber);
-                }
-              }}
-              name="width"
-              value="16"
+            <div class={stepUrlDone ? "" : "hidden"}>
+              <div class="w-full">
+                <img src={refUrlInput.current?.value} />
+              </div>
+              <div class="mt-4">
+                <Text noMargins>Width:{` ${urlImageWidth}px`}</Text>
+                <Text noMargins>Height:{` ${urlImageHeight}px`}</Text>
+              </div>
+            </div>
+          </div>
+          <div class={stepUrlDone ? "" : "opacity-10"}>
+            <Text type="heading">Step 2: Determine the size</Text>
+            <Text>{props.docStepSize}</Text>
+            <InputSize
+              widthError={widthError}
+              heightError={heightError}
+              widthOnfocusout={(ev) =>
+                handle.sizeCheck(
+                  ev.currentTarget.value,
+                  setWidthError,
+                  urlImageWidth,
+                )}
+              heightOnfocusout={(ev) =>
+                handle.sizeCheck(
+                  ev.currentTarget.value,
+                  setHeightError,
+                  urlImageHeight,
+                )}
+              recommendationsOnClick={(ev) =>
+                handle.recommendationsClick(ev.currentTarget.dataset.size)}
+              refHeight={refHeightInput}
+              refWidth={refWidthInput}
+              recommendations={sizeRecommendations}
             />
           </div>
-          <TextArea
-            required
-            label="Color palette (Hex values separated by commas)"
-            placeholder="#FF000, #00FF00, #0000FF"
-            error={paletteError}
-            onfocusout={(ev) => {
-              if (ev.currentTarget.value !== "") {
-                handle.paletteFocusOut(ev.currentTarget.value);
-              }
-            }}
-            name="palette"
-            value="#dfd9ff,#afbbfa,#7aadf5,#1f84cc,#1262b3,#000066,#030f33,#0f474d,#00806a,#089969,#12b362,#9eed77,#d0fa7d,#f7ff99,#fff7cc,#ffea80,#fabb64,#f59149,#cc5f29,#66050d,#b31b34,#e62e4d,#f7577f,#fc7ea8,#fa96c8,#e9abf5,#d0bbfa,#a37af5,#6246eb,#380899,#088199,#1fcccc,#7ae0f5,#b36b24,#400020,#400020,#400020"
-            maxWidth
-          />
-          <Input
-            disabled={disabledSubmit}
-            ref={refSubmitButton}
-            type="submit"
-            value="Convert"
-          />
-        </div>
-      </form>
-      {colorResults.length === 0 ? null : (
-        <div>
-          <Separator />
-          <Input
-            label="Image Size"
-            type="number"
-            onKeyUp={(ev) =>
-              setPreviewSizeMultiplier(ev.currentTarget.valueAsNumber)}
-          />
-          <PixelPreview
-            multiplier={previewSizeMultiplier}
-            colors={colorResults}
-            id="result-preview"
-          />
-          <br />
-          <Button
-            onClick={(ev) => {
-              const preview = document.getElementById("result-preview");
-              if (preview) {
-                const svg = preview.outerHTML;
-                const blob = new Blob([svg.toString()]);
-                const element = document.createElement("a");
-                element.download = "pixie.svg";
-                element.href = window.URL.createObjectURL(blob);
-                element.click();
-                element.remove();
-              }
-            }}
+          <div
+            class={stepSizeDone ? "" : stepUrlDone ? "opacity-10" : "hidden"}
           >
-            Download
-          </Button>
-        </div>
-      )}
-    </div>
+            <Text type="heading">Step 3: Determine the color palette</Text>
+            <Text>{props.docStepPalette}</Text>
+            <TextArea
+              label="Color palette"
+              required
+              maxWidth
+              rows={5}
+              onfocusout={(ev) => handle.paletteCheck(ev.currentTarget.value)}
+              error={paletteError}
+              refTextArea={refPaletteInput}
+              name="palette"
+            />
+            <Input
+              disabled={disabledSubmit}
+              ref={refSubmitButton}
+              type="submit"
+              value="Convert"
+            />
+          </div>
+        </form>
+      </Card>
+    </Layout>
   );
 }
