@@ -1,40 +1,36 @@
 # Changelog
 
-## v0.1.5
+## v0.1.7
 
 ### Added
 
-- Added the page component
-  - `~/components/Page.tsx`
+- Docs
+  - `~/docs/index/description.md`
+  - `~/docs/index/stepPalette.md`
+  - `~/docs/index/stepSize.md`
+  - `~/docs/index/stepUrl.md`
 
-- Updated app to latest components
-  - `~/routes/_app.tsx`
-  - `~/deps.ts`
-
-- New components to the MainForm island and index route
-  - `~/routes/index.tsx`
-  - `~/islands/MainForm.tsx`
-
-### Removed
-
-- Nothing
+- Aspect Ratio functions
+  - `~/back/aspectRatio.ts`
+  - `~/types.ts`
 
 ## Comming Soon (v1.0.0)
 
 ### Features
 
-- [x] Compress the image using most common color.
-- [x] Filter image using a color palette.
-- [ ] Preview image and aspect ratop before creating svg.
-- [ ] Page logo.
-- [ ] Credits and tech stack.
-- [x] Download button for SVG result.
-- [ ] Instructions.
+- [ ] Automatic aspect ratio calculator
+  - [ ] Add custom values for size
+  - [ ] Size suggestions for quick customization
+  - [ ] Preview the image's crop
 
-### Issues
+- [ ] Compress the image using Dithering
+  - [ ] Add a custom palette selector for overriding the colors.
+  - [ ] Convert the resulting image into an svg.
 
-- [ ] Missing support for non-square results.
-- [ ] Make optional the palette textarea. If null, do not filter the colors.
+- Misc
+  - [ ] Instructions
+  - [ ] Page logo.
+  - [ ] Credits and tech stack.
 
 ### Documentation
 

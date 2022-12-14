@@ -1,0 +1,1 @@
+Pixie is a tool that takes an image and turns it into a dithered pixel art svg.

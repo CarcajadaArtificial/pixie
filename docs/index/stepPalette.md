@@ -1,0 +1,1 @@
+The last step is setting a color palette. Just add a list of hex values separated by commas.
