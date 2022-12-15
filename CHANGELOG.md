@@ -1,17 +1,12 @@
 # Changelog
 
-## v0.1.11
+## v0.1.12
 
 ### Added
 
-- Updated the MainForm island, now step two is much more interactive. Preview SVGs can be downloaded.
-  - `~/islands/MainForm.tsx`
-
-- Added interpolation methods for image compression.
-  - `~/back/image.ts`
-
-- Fixed some issues in the Pixel Preview component.
-  - `~/components/PixelPreview.tsx`
+- Updated documentation
+  - `~/docs/index/stepSize.md`
+  - `~/docs/index/stepUrl.md`
 
 ## Comming Soon (v1.0.0)
 

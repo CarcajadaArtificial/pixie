@@ -1,1 +1,1 @@
-The result image is a simulated pixel art, because in svg there aren't any pixels. The size of these input refers to the number of simulated pixeles that compose the width and height of the result's canvas.
+The resulting image is a simulated pixel art because in SVG images there aren't any pixels. The value of these inputs refers to the number of simulated pixels that compose the width and height of the result's canvas.
