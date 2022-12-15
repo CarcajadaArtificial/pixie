@@ -1,19 +1,17 @@
 # Changelog
 
-## v0.1.10
+## v0.1.11
 
 ### Added
 
-- Compressing feature given the size
-  - `~/routes/api/compress.ts`
+- Updated the MainForm island, now step two is much more interactive. Preview SVGs can be downloaded.
   - `~/islands/MainForm.tsx`
-  - `~/component/PixelPreview.tsx`
 
-- `cropImageFromContainedSize()` and `pixelateCroppedImage()`
-  `~/back/image.ts`
+- Added interpolation methods for image compression.
+  - `~/back/image.ts`
 
-- InputSize component fix
-  - `~/components/InputSize.tsx`
+- Fixed some issues in the Pixel Preview component.
+  - `~/components/PixelPreview.tsx`
 
 ## Comming Soon (v1.0.0)
 

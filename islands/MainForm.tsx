@@ -8,7 +8,7 @@
  * @module
  */
 import { useEffect, useRef, useState } from "preact/hooks";
-import { Card, Input, Layout, Text, TextArea } from "../deps.ts";
+import { Button, Card, Input, Layout, Text, TextArea } from "../deps.ts";
 import { isValidHexColor, removeSpacesAndSplitByComma } from "../utils.ts";
 import InputUrl from "../components/InputUrl.tsx";
 import PixelPreview from "../components/PixelPreview.tsx";
@@ -54,10 +54,16 @@ export default function (props: iMainForm) {
   const refHeightInput = useRef<HTMLInputElement>(null);
   const refWidthInput = useRef<HTMLInputElement>(null);
   // - Fetched values
-  const [croppedImageSrc, setCroppedImageSrc] = useState("");
+  const [croppedImageSrc, setCroppedImageSrc] = useState(""); // Used to preview the image after crop
   const [compressedImageColors, setCompressedImageColors] = useState<
     number[][]
   >([[0, 0, 0, 0]]);
+  const [compressedImageGrays, setCompressedImageGrays] = useState<
+    number[][]
+  >([[0, 0, 0, 0]]);
+  // - Preview References
+  const refCompressedImageColors = useRef<SVGSVGElement>(null);
+  const refCompressedImageGrays = useRef<SVGSVGElement>(null);
   // - Step Done
   const [stepSizeDone, setStepSizeDone] = useState(false);
   //   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
@@ -99,16 +105,17 @@ export default function (props: iMainForm) {
         return;
       }
       setImageUrl(url);
+      setStepUrlDone(true);
       await fetch("/api/imageOk", {
         method: "POST",
         mode: "no-cors",
         body: JSON.stringify({ url: url }),
       }).then(async (res) => {
+        /** @todo Add a loading animation when waiting for this to load. */
         const { ok, width, height, recommendations } = await res.json();
         setUrlImageHeight(height);
         setUrlImageWidth(width);
         setSizeRecommendations(recommendations);
-        setStepUrlDone(ok);
         setUrlError(ok ? "" : "Invalid image, try another url.");
       });
     },
@@ -124,8 +131,8 @@ export default function (props: iMainForm) {
       }
       const numValue = parseInt(value);
       errorCb(
-        (numValue <= 0 || numValue > 320 || numValue > imageUrlSize)
-          ? "Value must be between 1 and 320, and equal or lower than the image's original size."
+        (numValue <= 7 || numValue > 320 || numValue > imageUrlSize)
+          ? "Value must be between 8 and 320, and equal or lower than the image's original size."
           : "",
       );
       if (
@@ -178,6 +185,7 @@ export default function (props: iMainForm) {
         .then((data) => {
           setCroppedImageSrc(data.src);
           setCompressedImageColors(data.compressedColos);
+          setCompressedImageGrays(data.compressedGrays);
         });
       // Set cropped Image Src
       setStepSizeDone(true);
@@ -195,6 +203,22 @@ export default function (props: iMainForm) {
         }
       });
       setPaletteError(allOk ? "" : "Invalid color values.");
+    },
+    /** */
+    downloadSVG: (svg: SVGSVGElement, name: string) => {
+      svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      const svgData = svg.outerHTML;
+      const preface = '<?xml version="1.0" standalone="no"?>\r\n';
+      const svgBlob = new Blob([preface, svgData], {
+        type: "image/svg+xml;charset=utf-8",
+      });
+      const svgUrl = URL.createObjectURL(svgBlob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = svgUrl;
+      downloadLink.download = name;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
     },
     /** */
     formSubmit: () => {
@@ -268,18 +292,45 @@ export default function (props: iMainForm) {
               refWidth={refWidthInput}
               recommendations={sizeRecommendations}
             />
-            <div class={stepSizeDone ? "flex flex-col mt-4 gap-2" : "hidden"}>
-              <img
-                class="max-h-80"
-                /** @todo trun this into an override class for max-w-fit */
-                style="max-width: fit-content;"
-                src={croppedImageSrc}
-              />
-              <PixelPreview
-                height={heightInputValue}
-                width={widthInputValue}
-                colors={compressedImageColors}
-              />
+            <div class={stepSizeDone ? "flex mt-4 mb-8 gap-2" : "hidden"}>
+              <div>
+                <PixelPreview
+                  height={heightInputValue}
+                  width={widthInputValue}
+                  colors={compressedImageColors}
+                  refSvg={refCompressedImageColors}
+                />
+                <Button
+                  onclick={(ev) => {
+                    ev.preventDefault();
+                    handle.downloadSVG(
+                      refCompressedImageColors.current!,
+                      "pixie_compressed_colors.svg",
+                    );
+                  }}
+                >
+                  Download
+                </Button>
+              </div>
+              <div>
+                <PixelPreview
+                  height={heightInputValue}
+                  width={widthInputValue}
+                  colors={compressedImageGrays}
+                  refSvg={refCompressedImageGrays}
+                />
+                <Button
+                  onclick={(ev) => {
+                    ev.preventDefault();
+                    handle.downloadSVG(
+                      refCompressedImageGrays.current!,
+                      "pixie_compressed_grayscale.svg",
+                    );
+                  }}
+                >
+                  Download
+                </Button>
+              </div>
             </div>
           </div>
           <div
