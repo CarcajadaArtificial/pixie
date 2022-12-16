@@ -15,16 +15,14 @@ import {
   convertBlobToBase64,
   cropImageFromContainedSize,
   pixelateCroppedImage,
+  interpolateModeColor,
+  interpolateGrayscale,
 } from '../../back/image.ts';
 
 export const handler: Handlers = {
   async POST(req, _ctx) {
     const data = await req.json();
     const imageDecoded = await decodeImageFromUrl(data.url.toString());
-    const [decodedWidth, decodedHeight]: [number, number] = [
-      imageDecoded?.width!,
-      imageDecoded?.height!,
-    ];
 
     // Crops image
     const croppedImage = await cropImageFromContainedSize(
@@ -35,7 +33,14 @@ export const handler: Handlers = {
     const compressedColos = await pixelateCroppedImage(
       croppedImage,
       data.width,
-      data.height
+      data.height,
+      interpolateModeColor
+    );
+    const compressedGrays = await pixelateCroppedImage(
+      croppedImage,
+      data.width,
+      data.height,
+      interpolateGrayscale
     );
 
     // Converts cropped image to base 64 string.
@@ -46,7 +51,11 @@ export const handler: Handlers = {
 
     // Return array of RGBA[] containing the pixel art svg with true colors.
     return new Response(
-      JSON.stringify({ src: imageBase64, compressedColos: compressedColos })
+      JSON.stringify({
+        src: imageBase64,
+        compressedColos: compressedColos,
+        compressedGrays: compressedGrays,
+      })
     );
   },
 };

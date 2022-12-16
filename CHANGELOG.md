@@ -1,12 +1,11 @@
 # Changelog
 
-## v0.1.12
+## v0.1.13
 
 ### Added
 
-- Updated documentation
-  - `~/docs/index/stepSize.md`
-  - `~/docs/index/stepUrl.md`
+- Updated the compress service
+  - `~/routes/compress.ts`
 
 ## Comming Soon (v1.0.0)
 
