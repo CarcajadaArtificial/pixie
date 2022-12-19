@@ -1,11 +1,10 @@
 # Changelog
 
-## v0.1.13
+## v0.1.15
 
 ### Added
 
-- Updated the compress service
-  - `~/routes/compress.ts`
+- Moved main logic and types to the src directory
 
 ## Comming Soon (v1.0.0)
 

@@ -10,7 +10,10 @@
  */
 
 import { Handlers } from '$fresh/server.ts';
-import { getClosestColor, removeSpacesAndSplitByComma } from '../../utils.ts';
+import {
+  getClosestColor,
+  removeSpacesAndSplitByComma,
+} from '../../src/utils.ts';
 
 function splitArray<T>(array: T[], part: number): T[][] {
   const tmp = [];

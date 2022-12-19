@@ -17,7 +17,7 @@ import {
   pixelateCroppedImage,
   interpolateModeColor,
   interpolateGrayscale,
-} from '../../back/image.ts';
+} from '../../src/back/image.ts';
 
 /**
  * @todo Create type for data object.

@@ -1,7 +1,7 @@
 import { JSX, Ref } from "preact";
-import { getRecommendations } from "../back/aspectRatio.ts";
+import { getRecommendations } from "../src/back/aspectRatio.ts";
 import { Input, Text } from "../deps.ts";
-import { Size } from "../types.ts";
+import { Size } from "../src/types.ts";
 
 interface iInputUrl {
   // Height

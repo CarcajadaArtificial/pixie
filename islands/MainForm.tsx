@@ -10,11 +10,11 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { JSX } from "preact";
 import { Button, Card, Input, Layout, Text, TextArea } from "../deps.ts";
-import { isValidHexColor, removeSpacesAndSplitByComma } from "../utils.ts";
+import { isValidHexColor, removeSpacesAndSplitByComma } from "../src/utils.ts";
 import InputUrl from "../components/InputUrl.tsx";
 import PixelPreview from "../components/PixelPreview.tsx";
 import InputSize from "../components/InputSize.tsx";
-import { Size } from "../types.ts";
+import { Size } from "../src/types.ts";
 
 interface iMainForm {
   docStepUrl: string;

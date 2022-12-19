@@ -10,9 +10,9 @@
  */
 
 import { Handlers } from '$fresh/server.ts';
-import { decodeImageFromUrl } from '../../back/image.ts';
-import { getRecommendations } from '../../back/aspectRatio.ts';
-import { Size } from '../../types.ts';
+import { decodeImageFromUrl } from '../../src/back/image.ts';
+import { getRecommendations } from '../../src/back/aspectRatio.ts';
+import { Size } from '../../src/types.ts';
 
 /**
  * @todo Create type for data object.
