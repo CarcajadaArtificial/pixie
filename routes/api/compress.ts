@@ -19,6 +19,9 @@ import {
   interpolateGrayscale,
 } from '../../back/image.ts';
 
+/**
+ * @todo Create type for data object.
+ */
 export const handler: Handlers = {
   async POST(req, _ctx) {
     const data = await req.json();

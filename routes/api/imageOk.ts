@@ -15,7 +15,7 @@ import { getRecommendations } from '../../back/aspectRatio.ts';
 import { Size } from '../../types.ts';
 
 /**
- * @todo Send the image dimensions to set the size of the image preview.
+ * @todo Create type for data object.
  */
 export const handler: Handlers = {
   async POST(req, _ctx) {

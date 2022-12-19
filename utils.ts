@@ -120,7 +120,7 @@ const hexToRgb = (hex: string) =>
 export function getClosestColor(
   mainRgb: number[],
   colorList: string[]
-): number[] {
+): [number[], number[]] {
   const rgbColorList = colorList.map((color) => hexToRgb(color));
 
   const colorDifferenceList = rgbColorList.map((color) =>
@@ -133,11 +133,20 @@ export function getClosestColor(
     )
   );
 
+  console.log(mainRgb);
+
   const closestRgb = hexToRgb(
     colorList[
       colorDifferenceList.indexOf(Math.min.apply(Math, colorDifferenceList))
     ]
   );
 
-  return [...closestRgb, mainRgb[3]];
+  return [
+    [...closestRgb, mainRgb[3]],
+    [
+      mainRgb[0] - closestRgb[0],
+      mainRgb[1] - closestRgb[1],
+      mainRgb[2] - closestRgb[2],
+    ],
+  ];
 }

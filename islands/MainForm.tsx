@@ -8,6 +8,7 @@
  * @module
  */
 import { useEffect, useRef, useState } from "preact/hooks";
+import { JSX } from "preact";
 import { Button, Card, Input, Layout, Text, TextArea } from "../deps.ts";
 import { isValidHexColor, removeSpacesAndSplitByComma } from "../utils.ts";
 import InputUrl from "../components/InputUrl.tsx";
@@ -77,6 +78,13 @@ export default function (props: iMainForm) {
   //   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
   // Form
   const refForm = useRef<HTMLFormElement>(null);
+  // - Fetched values
+  // const [ditheredImageColors, setDitheredImageColors] = useState<
+  //   number[][]
+  // >([[0, 0, 0, 0]]);
+  // const [ditheredImageGrays, setDitheredImageGrays] = useState<
+  //   number[][]
+  // >([[0, 0, 0, 0]]);
 
   //   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -   -
   useEffect(() => {
@@ -100,7 +108,8 @@ export default function (props: iMainForm) {
   // ---------------------------------------------------------------------------------------------------
   const handle = {
     /** */
-    urlCheck: async (url: string) => {
+    urlCheck: async (ev: JSX.TargetedEvent<HTMLInputElement, Event>) => {
+      const url = ev.currentTarget.value;
       if (url === "") {
         return;
       }
@@ -221,16 +230,22 @@ export default function (props: iMainForm) {
       document.body.removeChild(downloadLink);
     },
     /** */
-    formSubmit: () => {
-      if (refForm.current) {
-        const payload = new FormData(refForm.current);
-        console.log(payload.get("palette"));
-        // await fetch("/api/compress", {
-        //   method: "POST",
-        //   body: payload,
-        // }).then((res) => res.json())
-        //   .then((data) => setColorResults(data.colors));
-      }
+    formSubmit: async (ev: JSX.TargetedEvent<HTMLFormElement, Event>) => {
+      ev.preventDefault();
+      await fetch("/api/dither", {
+        method: "POST",
+        body: JSON.stringify({
+          colors: compressedImageColors,
+          grays: compressedImageGrays,
+          palette: refPaletteInput.current?.value,
+          width: widthInputValue,
+          height: heightInputValue,
+        }),
+      }).then((res) => res.json())
+        .then((data) => {
+          // setDitheredImageColors(data.colors);
+          // setDitheredImageGrays(data.grays);
+        });
     },
   };
 
@@ -247,16 +262,13 @@ export default function (props: iMainForm) {
         <form
           ref={refForm}
           class="grid gap-10"
-          onSubmit={async (ev) => {
-            ev.preventDefault();
-            await handle.formSubmit();
-          }}
+          onSubmit={handle.formSubmit}
         >
           <div>
             <Text type="heading">Step 1: Choose an image</Text>
             <Text>{props.docStepUrl}</Text>
             <InputUrl
-              onfocusout={(ev) => handle.urlCheck(ev.currentTarget.value)}
+              onfocusout={handle.urlCheck}
               error={urlError}
               refInput={refUrlInput}
             />
@@ -347,6 +359,7 @@ export default function (props: iMainForm) {
               error={paletteError}
               refTextArea={refPaletteInput}
               name="palette"
+              value="#fff,#000"
             />
             <Input
               disabled={disabledSubmit}
