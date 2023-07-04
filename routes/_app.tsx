@@ -20,8 +20,16 @@ export default function App({ Component }: AppProps) {
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/CarcajadaArtificial/ana-components@0.0.82/static/style.css"
         />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/CarcajadaArtificial/ana-components@0.0.82/static/playground.css"
+        />
       </Head>
-      <Component />
+      <body class="clr-bg-panel clr-txt-base txt-paragraph">
+        <div class="_screen">
+          <Component />
+        </div>
+      </body>
     </>
   );
 }

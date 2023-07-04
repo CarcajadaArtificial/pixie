@@ -1,15 +1,16 @@
 # Changelog
 
-## v0.1.18
+## v0.1.19
 
-### Added Rust FFI
-  `/deno.json`
-  `/Cargo.toml`
-  `/ffi.ts`
-  `/src/lib.rs`
+### Added an API function that checks if an image is valid or not
+  - `/routes/api/convert.ts`
+  - `/routes/index.tsx`
+  - `/islands/Converter.tsx`
 
 ### Minor updates
-  - `/.gitignore`
+  - `/fresh.gen.ts`
+  - `/routes/_app.tsx`
+  - `/.vscode/settings.json`
 
 ## Roadmap
 
