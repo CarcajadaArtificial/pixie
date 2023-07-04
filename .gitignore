@@ -1,3 +1,5 @@
 .obsidian
 .DS_Store
 deno.lock
+/target
+Cargo.lock

@@ -1,9 +1,15 @@
 # Changelog
 
-## v0.1.17
+## v0.1.18
 
-### Updated ana-components import
-  `/import_map.json`
+### Added Rust FFI
+  `/deno.json`
+  `/Cargo.toml`
+  `/ffi.ts`
+  `/src/lib.rs`
+
+### Minor updates
+  - `/.gitignore`
 
 ## Roadmap
 
