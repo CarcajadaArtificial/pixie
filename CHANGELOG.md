@@ -1,8 +1,9 @@
 # Changelog
 
-## v0.1.16
+## v0.1.17
 
-### Removed everything for a fresh start
+### Updated ana-components import
+  `/import_map.json`
 
 ## Roadmap
 
