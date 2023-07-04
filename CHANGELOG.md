@@ -1,51 +1,21 @@
 # Changelog
 
-## v0.1.15
+## v0.1.16
 
-### Added
+### Removed everything for a fresh start
 
-- Moved main logic and types to the src directory
+## Roadmap
 
-## Comming Soon (v1.0.0)
+### v1.0.0
 
-### Features
-
-- [x] Automatic aspect ratio calculator
-  - [x] Add custom values for size
-  - [x] Size suggestions for quick customization
-  - [x] Preview the image's crop
-  - [ ] Download button for the pixelated preview.
-
-- [ ] Compress the image using Dithering
-  - [ ] Add a custom palette selector for overriding the colors.
-  - [ ] Feature at least five existing dithering algorithms.
-
-- Misc
-  - [ ] Instructions
-  - [ ] Page logo.
-  - [ ] Credits and tech stack.
-
-### Documentation
-
-- [ ] `utils.ts`
-
-- back
-  - [ ] `image.ts`
-  - [x] `aspectRatio.ts`
-
-- components
-  - [ ] `PixelPreview.tsx`
-  - [ ] `InputSize.tsx`
-  - [ ] `InputUrl.tsx`
-  - [ ] Comming soon `InputPalette.tsx`
-
-- islands
-  - [ ] `MainForm.tsx`
-
-- routes
-  - [ ] `api/compress.tsx`
-  - [ ] `api/imageOk.ts`
-  - [ ] `_app.tsx`
-  - [ ] `index.tsx`
-  - [ ] Comming soon `app.tsx`
-  - [ ] Comming soon `about.tsx`
+  1. Implement interaction to Rust functions from Deno.
+    - [ ] Develop a Rust function that takes an image's buffer and returns it to the client.
+  2. Develop the Rust workflow that converts an image into a pixel art SVG.
+    - The workflow must end with an array of colors and the svg-pixel width and height.
+    - [ ] Find the "best" aspect ratio.
+    - [ ] Divide the image into pieces.
+    - [ ] Reduce every piece to a single color.
+    - [ ] Implement dithering algorithms.
+  3. Display the generated svg and download.
+    - [ ] Create and render an SVG with the received data.
+    - [ ] Add a Download button.

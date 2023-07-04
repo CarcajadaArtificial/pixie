@@ -8,8 +8,8 @@
  * @module
  */
 
-import { AppProps } from "$fresh/server.ts";
-import { Head } from "$fresh/runtime.ts";
+import { AppProps } from '$fresh/server.ts';
+import { Head } from '$fresh/runtime.ts';
 
 export default function App({ Component }: AppProps) {
   return (
@@ -18,7 +18,7 @@ export default function App({ Component }: AppProps) {
         <title>Pixie</title>
         <link
           rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/CarcajadaArtificial/ana-components@0.0.29/static/styles.css"
+          href="https://cdn.jsdelivr.net/gh/CarcajadaArtificial/ana-components@0.0.82/static/style.css"
         />
       </Head>
       <Component />
