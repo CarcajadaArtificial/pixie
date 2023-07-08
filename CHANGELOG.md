@@ -1,16 +1,14 @@
 # Changelog
 
-## v0.1.19
+## v0.1.20
 
-### Added an API function that checks if an image is valid or not
-  - `/routes/api/convert.ts`
-  - `/routes/index.tsx`
+### Connected FFI to an API get function
   - `/islands/Converter.tsx`
+  - `/routes/api/convert.ts`
 
 ### Minor updates
-  - `/fresh.gen.ts`
+  - `/import_map.json`
   - `/routes/_app.tsx`
-  - `/.vscode/settings.json`
 
 ## Roadmap
 

@@ -5,6 +5,7 @@
 
 import { Handlers } from '$fresh/server.ts';
 import { decode, Image } from 'https://deno.land/x/imagescript@v1.2.14/mod.ts';
+import { rs } from '../../ffi.ts';
 
 /**
  *
@@ -56,10 +57,12 @@ export const handler: Handlers = {
       ok: boolean;
       width: number;
       height: number;
+      sum: number;
     } = {
       ok: true,
       width: image.width,
       height: image.height,
+      sum: rs.add(image.width, image.height),
     };
 
     return new Response(JSON.stringify(response));

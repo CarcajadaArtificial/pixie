@@ -10,6 +10,6 @@
     "twind/": "https://esm.sh/twind@0.16.17/",
     "ana-utils": "https://deno.land/x/ana_utils@v0.0.5/mod.ts",
     "ana-components-local": "../ana-components/mod.ts",
-    "ana-components": "https://deno.land/x/ana_components@v0.0.85/mod.ts"
+    "ana-components": "https://deno.land/x/ana_components@v0.0.102/mod.ts"
   }
 }
