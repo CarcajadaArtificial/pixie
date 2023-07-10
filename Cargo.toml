@@ -1,8 +1,0 @@
-[package]
-name = "pixie"
-version = "0.0.1"
-publish = false
-[lib]
-crate-type = ["cdylib"]
-[dependencies]
-sysctl = "0.4.2"

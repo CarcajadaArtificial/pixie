@@ -1,14 +1,11 @@
 # Changelog
 
-## v0.1.20
+## v0.1.21
 
-### Connected FFI to an API get function
-  - `/islands/Converter.tsx`
+### Removed Rust FFI from the project
+  - Removed `/Cargo.toml`, `/ffi.ts`, and `/src/lib.rs`.
+  - `/deno.json`
   - `/routes/api/convert.ts`
-
-### Minor updates
-  - `/import_map.json`
-  - `/routes/_app.tsx`
 
 ## Roadmap
 
