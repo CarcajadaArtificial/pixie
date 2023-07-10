@@ -7,6 +7,9 @@ export type Pixel = {
   a: number;
 };
 
+/**
+ * @todo [!!] Complete documentation
+ */
 export function cropPixelChunks(image: Image, width: number, height: number): Image[] {
   const chunkSize = image.width / width;
   const chunkArray: Image[] = [];
@@ -18,6 +21,9 @@ export function cropPixelChunks(image: Image, width: number, height: number): Im
   return chunkArray;
 }
 
+/**
+ * @todo [!!] Complete documentation
+ */
 export function imagePixelsMap<T>(image: Image, cb: (pixel: Pixel) => T): T[] {
   const [height, width] = [image.height, image.width];
   const mapResult: T[] = [];
@@ -36,3 +42,40 @@ export function imagePixelsMap<T>(image: Image, cb: (pixel: Pixel) => T): T[] {
   }
   return mapResult;
 }
+
+/**
+ * @todo [!!] Complete documentation
+ */
+export const getAverageChunkColor = (chunk: Image): Pixel => {
+  const avgPixel: Pixel = {
+    r: 0,
+    g: 0,
+    b: 0,
+    a: 0,
+  };
+
+  imagePixelsMap(chunk, (pixel) => {
+    avgPixel.a += pixel.a;
+    avgPixel.r += pixel.r;
+    avgPixel.g += pixel.g;
+    avgPixel.b += pixel.b;
+  });
+
+  const pixelCount = chunk.width * chunk.height;
+  avgPixel.a = avgPixel.a / pixelCount / 255;
+
+  if (avgPixel.a <= 0.01) {
+    return {
+      r: 0,
+      g: 0,
+      b: 0,
+      a: 0,
+    };
+  } else {
+    avgPixel.r = Math.round(avgPixel.r / pixelCount);
+    avgPixel.g = Math.round(avgPixel.g / pixelCount);
+    avgPixel.b = Math.round(avgPixel.b / pixelCount);
+
+    return avgPixel;
+  }
+};

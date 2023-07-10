@@ -1,23 +1,10 @@
 # Changelog
 
-## v0.1.23
+## v0.1.24
 
-### Added the PixelArtSvg component for result previews
-  - `/components/PixelArtSvg.tsx`
-  - `/islands/App/index.tsx`
-
-### Updated the `convert` service to actually convert an image into an SVG
+### Refactored the content inside the `convert` service into the `getAverageChunkColor` function.
   - `/routes/api/convert.ts`
-
-### Added the decode module for imagescript decoding functions
-  - `/src/decode.ts`
-
-### Added the image module for Image manipulation
   - `/src/image.ts`
-
-### Minor updates
-  - `/routes/_app.tsx`
-  - `/routes/index.tsx`
 
 ## Roadmap to v1.0.0
 
