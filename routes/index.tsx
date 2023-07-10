@@ -7,7 +7,7 @@
 /**
  * @module
  */
-import Converter from '../islands/Converter.tsx';
+import App from '../islands/App/index.tsx';
 import { Main, Header, Text, Input, Layout, LAYOUT_TYPES, TEXT_TYPES } from 'ana-components';
 
 export default function Home() {
@@ -23,7 +23,7 @@ export default function Home() {
       </Header>
       <Main>
         <Layout type={LAYOUT_TYPES.CENTER}>
-          <Converter />
+          <App />
         </Layout>
       </Main>
     </div>

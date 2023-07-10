@@ -4,7 +4,7 @@
  */
 
 import { Handlers } from '$fresh/server.ts';
-import { decode, Image } from 'https://deno.land/x/imagescript@v1.2.14/mod.ts';
+import { decode, Image } from 'imagescript';
 
 /**
  *
@@ -20,27 +20,25 @@ export async function decodeImageFromBuffer(buffer: ArrayBuffer): Promise<Image 
   }
 }
 
+export async function decodeImageFromUrl(url: string): Promise<Image | null> {
+  const imageFetch = await fetch(url, { method: 'GET' })
+    .then(async (res) => await res.blob())
+    .catch(() => null);
+
+  if (!imageFetch) {
+    return null;
+  } else {
+    return await decodeImageFromBuffer(await imageFetch.arrayBuffer());
+  }
+}
+
 /**
  * @todo Create type for data object.
  */
 export const handler: Handlers = {
   async POST(req, _ctx) {
     const data = await req.json();
-
-    const imageFetch = await fetch(data.url, { method: 'GET' })
-      .then(async (res) => await res.blob())
-      .catch(() => null);
-
-    if (!imageFetch) {
-      const response = {
-        ok: false,
-      };
-      return new Response(JSON.stringify(response));
-    }
-
-    const imageBuffer = await imageFetch.arrayBuffer();
-    console.log(imageBuffer.slice(0));
-    const image = await decodeImageFromBuffer(imageBuffer);
+    const image = await decodeImageFromUrl(data.url);
 
     if (!image) {
       const response = {

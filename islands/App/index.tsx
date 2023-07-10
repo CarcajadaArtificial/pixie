@@ -1,7 +1,7 @@
 import { Input, Button, Separator, Text } from 'ana-components-local';
 import { useState, useRef } from 'preact/hooks';
 
-export default function Converter() {
+export default function App() {
   const [width, setWitdh] = useState<string>('');
   const [height, setHeight] = useState<string>('');
   const [sum, setSum] = useState<string>('');

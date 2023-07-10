@@ -1,10 +1,15 @@
 # Changelog
 
-## v0.1.21
+## v0.1.22
 
-### Removed Rust FFI from the project
-  - Removed `/Cargo.toml`, `/ffi.ts`, and `/src/lib.rs`.
-  - `/deno.json`
+### Moved the `Converter` island to `App`
+  - Removed `/islands/Converter.tsx`.
+  - `/fresh.gen.ts`
+  - `/islands/App/index.tsx`
+  - `/routes/index.tsx`
+
+### Updated dependencies
+  - `/import_map.json`
   - `/routes/api/convert.ts`
 
 ## Roadmap
