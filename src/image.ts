@@ -13,23 +13,20 @@ export type Pixel = {
   neighbors?: ColorNames[];
 };
 
-/**
- * @todo [!!] Complete documentation
- */
-export function cropPixelChunks(image: Image, width: number, height: number): Image[] {
-  const chunkSize = image.width / width;
+/** This function splits an image into a grid of cropped square chunks. */
+export function cropPixelChunks(image: Image, gridWidth: number, gridHeight: number): Image[] {
+  const chunkSize = image.width / gridWidth;
   const chunkArray: Image[] = [];
-  for (let j = 0; j < height; j++) {
-    for (let i = 0; i < width; i++) {
+  for (let j = 0; j < gridHeight; j++) {
+    for (let i = 0; i < gridWidth; i++) {
       chunkArray.push(image.clone().crop(i * chunkSize, j * chunkSize, chunkSize, chunkSize));
     }
   }
   return chunkArray;
 }
+[].map;
 
-/**
- * @todo [!!] Complete documentation
- */
+/** This function calls a defined callback function on each Pixel of an Image, and returns an array that contains the results. It is an adaptation of Array.map(). */
 export function imagePixelsMap<T>(image: Image, cb: (pixel: Pixel) => T): T[] {
   const [height, width] = [image.height, image.width];
   const mapResult: T[] = [];
@@ -49,9 +46,7 @@ export function imagePixelsMap<T>(image: Image, cb: (pixel: Pixel) => T): T[] {
   return mapResult;
 }
 
-/**
- * @todo [!!] Complete documentation
- */
+/** This function finds the average color in an Image. */
 export const getAverageChunkColor = (chunk: Image): Pixel => {
   const avgPixel: Pixel = {
     r: 0,

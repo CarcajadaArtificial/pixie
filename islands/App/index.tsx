@@ -1,7 +1,7 @@
 import { Input, Button } from 'ana-components';
 import { useState, useRef } from 'preact/hooks';
 import PixelArtSvg from '../../components/PixelArtSvg.tsx';
-import { convert_request, convert_response } from '../../routes/api/convert.ts';
+import { convertReq, convertRes } from '../../routes/api/convert.ts';
 import { Pixel } from '../../src/image.ts';
 
 export default function App() {
@@ -13,7 +13,7 @@ export default function App() {
 
   const handle = {
     urlCheck: async () => {
-      const req: convert_request = {
+      const req: convertReq = {
         url: inputRef.current?.value!,
         pixelartWidth: pixelartWidth,
         pixelartHeight: pixelartHeight,
@@ -29,8 +29,8 @@ export default function App() {
         body: JSON.stringify(req),
       })
         .then(async (res) => {
-          /** @todo [!!] Add a loading animation when waiting for this to load. */
-          const { ok, pixels } = (await res.json()) as convert_response;
+          /** @todo [!] Add a loading animation when waiting for this to load. */
+          const { ok, pixels } = (await res.json()) as convertRes;
           if (ok) {
             // alert(`ok ${width}`);
             setPixels(pixels);

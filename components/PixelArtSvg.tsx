@@ -9,9 +9,6 @@ interface PixelArtSvg extends JSX.HTMLAttributes<SVGSVGElement> {
   fref?: Ref<SVGSVGElement>;
 }
 
-/**
- * @todo Fix issue with vertical images.
- */
 export default function PixelArtSvg(props: Partial<PixelArtSvg>) {
   const { fref, pixels, height, width, ...svgProps } = applyDefaults<PixelArtSvg>(
     {

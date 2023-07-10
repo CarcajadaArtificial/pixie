@@ -557,4 +557,5 @@ export const palette: { [key in ColorNames]: Pixel } = {
   },
 };
 
+/** This function creates an array of Pixels based on an array of ColorNames. */
 export const createPalette = (names: ColorNames[]): Pixel[] => names.map((name) => palette[name]);

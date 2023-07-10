@@ -4,23 +4,33 @@ import { dither } from '../../src/dither.ts';
 import { cropPixelChunks, getAverageChunkColor, Pixel } from '../../src/image.ts';
 import { createPalette } from '../../src/palette.ts';
 
-export type convert_request = {
+/** The request data object for the `convert` service. */
+export type convertReq = {
+  /** This url will be fetched and decoded using `imagescript` */
   url: string;
+  /** Amount of "pixels" that fit horizontally in the resulting SVG.  */
   pixelartWidth: number;
+  /** Amount of "pixels" that fit vertically in the resulting SVG.  */
   pixelartHeight: number;
 };
 
-export type convert_response = {
+/** The response data object for the `convert` service. */
+export type convertRes = {
+  /** True if everything went well, false if anything went wrong. */
   ok: boolean;
+  /** The "pixels" make up the resulting SVG. */
   pixels: Pixel[];
 };
 
 /**
- * @todo [!!] Complete documentation
+ * This service converts an image URL into a SVG dithered pixel art with certain dimensions.
+ *
+ * * This is a temporary service. In the future of this app, this service will become deprecated in
+ *    favor of ones with more specific uses. *
  */
 export const handler: Handlers = {
   async POST(req, _ctx) {
-    const { url, pixelartWidth, pixelartHeight } = (await req.json()) as convert_request;
+    const { url, pixelartWidth, pixelartHeight } = (await req.json()) as convertReq;
 
     const image = await decodeImageFromUrl(url);
 
@@ -38,7 +48,7 @@ export const handler: Handlers = {
       getAverageChunkColor(chunk)
     );
 
-    const response: convert_response = {
+    const response: convertRes = {
       ok: true,
       pixels: dither(
         pixels,

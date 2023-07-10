@@ -1,15 +1,18 @@
 # Changelog
 
-## v0.1.25
+## v0.1.26
 
-### Added the dithering feature
-  - `/src/color.ts`
-  - `/src/dither.ts`
-  - `/src/palette.ts`
+### Added functional documentation
   - `/routes/api/convert.ts`
+  - `/src/color.ts`
+  - `/src/decode.ts`
+  - `/src/dither.ts`
+  - `/src/image.ts`
+  - `/src/palette.ts`
 
 ### Minor updates
-  - `/src/image.ts`
+  - `/components/PixelArtSvg.tsx`
+  - `/islands/App/index.tsx`
 
 ## Roadmap to v1.0.0
 
