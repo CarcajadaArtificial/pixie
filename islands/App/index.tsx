@@ -1,37 +1,52 @@
-import { Input, Button, Separator, Text } from 'ana-components-local';
+import { Input, Button } from 'ana-components';
 import { useState, useRef } from 'preact/hooks';
+import PixelArtSvg from '../../components/PixelArtSvg.tsx';
+import { convert_request, convert_response } from '../../routes/api/convert.ts';
+import { Pixel } from '../../src/image.ts';
 
 export default function App() {
-  const [width, setWitdh] = useState<string>('');
-  const [height, setHeight] = useState<string>('');
-  const [sum, setSum] = useState<string>('');
-  const [imgok, setImgok] = useState<boolean | undefined>(undefined);
   const [urlerror, setUrlerror] = useState<string>('');
+  const [pixels, setPixels] = useState<Pixel[] | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [pixelartWidth, pixelartHeight] = [64, 64];
+
   const handle = {
-    urlCheck: async (url: string) => {
-      if (url === '') {
+    urlCheck: async () => {
+      const req: convert_request = {
+        url: inputRef.current?.value!,
+        pixelartWidth: pixelartWidth,
+        pixelartHeight: pixelartHeight,
+      };
+
+      if (req.url === '') {
         return;
       }
+
       await fetch('/api/convert', {
         method: 'POST',
         mode: 'no-cors',
-        body: JSON.stringify({ url: url }),
-      }).then(async (res) => {
-        /** @todo [!!] Add a loading animation when waiting for this to load. */
-        const { ok, width, height, sum, recommendations } = await res.json();
-        setWitdh(height);
-        setHeight(width);
-        setSum(sum);
-        setImgok(recommendations);
-        setUrlerror(ok ? '' : 'Invalid image, try another url.');
-      });
+        body: JSON.stringify(req),
+      })
+        .then(async (res) => {
+          /** @todo [!!] Add a loading animation when waiting for this to load. */
+          const { ok, pixels } = (await res.json()) as convert_response;
+          if (ok) {
+            // alert(`ok ${width}`);
+            setPixels(pixels);
+            setUrlerror('');
+          } else {
+            setUrlerror('Invalid image, try another url.');
+          }
+        })
+        .catch(() => {
+          setUrlerror('Server error, please contact developer.');
+        });
     },
   };
 
   return (
-    <div>
+    <>
       <Input
         value="https://em-content.zobj.net/thumbs/240/apple/354/fairy_1f9da.png"
         type="url"
@@ -43,15 +58,12 @@ export default function App() {
       <Button
         onClick={(ev) => {
           ev.preventDefault();
-          handle.urlCheck(inputRef.current?.value!);
+          handle.urlCheck();
         }}
       >
         Check
       </Button>
-      <Text>
-        Width: {width} <br /> Height: {height} <br /> Sum: {sum}
-      </Text>
-      <Separator />
-    </div>
+      <PixelArtSvg pixels={pixels} width={pixelartWidth} height={pixelartHeight} />
+    </>
   );
 }
