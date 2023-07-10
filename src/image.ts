@@ -1,10 +1,16 @@
 import { Image } from 'imagescript';
+import { ColorNames } from './palette.ts';
 
 export type Pixel = {
   r: number;
   g: number;
   b: number;
   a: number;
+  hex?: string;
+  h?: number;
+  s?: number;
+  l?: number;
+  neighbors?: ColorNames[];
 };
 
 /**

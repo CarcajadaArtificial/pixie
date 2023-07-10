@@ -1,6 +1,8 @@
 import { Handlers } from '$fresh/server.ts';
 import { decodeImageFromUrl } from '../../src/decode.ts';
+import { dither } from '../../src/dither.ts';
 import { cropPixelChunks, getAverageChunkColor, Pixel } from '../../src/image.ts';
+import { createPalette } from '../../src/palette.ts';
 
 export type convert_request = {
   url: string;
@@ -38,7 +40,21 @@ export const handler: Handlers = {
 
     const response: convert_response = {
       ok: true,
-      pixels: pixels,
+      pixels: dither(
+        pixels,
+        pixelartWidth,
+        pixelartHeight,
+        createPalette([
+          'blanco',
+          'papel',
+          'plata',
+          'acero',
+          'hierro',
+          'grafito',
+          'chapopote',
+          'obsidiana',
+        ])
+      ),
     };
 
     return new Response(JSON.stringify(response));
