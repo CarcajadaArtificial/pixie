@@ -1,6 +1,6 @@
 import { Handlers } from '$fresh/server.ts';
 import { decodeImageFromUrl } from '../../src/decode.ts';
-import { dither } from '../../src/dither.ts';
+import { dither, DitheringAlgorithmNames } from '../../src/dither.ts';
 import { cropPixelChunks, getAverageChunkColor, Pixel } from '../../src/image.ts';
 import { createPalette } from '../../src/palette.ts';
 
@@ -12,6 +12,8 @@ export type convertReq = {
   pixelartWidth: number;
   /** Amount of "pixels" that fit vertically in the resulting SVG.  */
   pixelartHeight: number;
+  /** */
+  algorithm: DitheringAlgorithmNames;
 };
 
 /** The response data object for the `convert` service. */
@@ -30,7 +32,7 @@ export type convertRes = {
  */
 export const handler: Handlers = {
   async POST(req, _ctx) {
-    const { url, pixelartWidth, pixelartHeight } = (await req.json()) as convertReq;
+    const { url, pixelartWidth, pixelartHeight, algorithm } = (await req.json()) as convertReq;
 
     const image = await decodeImageFromUrl(url);
 
@@ -63,7 +65,8 @@ export const handler: Handlers = {
           'grafito',
           'chapopote',
           'obsidiana',
-        ])
+        ]),
+        algorithm
       ),
     };
 

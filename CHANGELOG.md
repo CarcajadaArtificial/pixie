@@ -1,18 +1,21 @@
 # Changelog
 
-## v0.1.26
+## v0.1.27
 
-### Added functional documentation
+### Added an extended configuration form
   - `/routes/api/convert.ts`
-  - `/src/color.ts`
-  - `/src/decode.ts`
-  - `/src/dither.ts`
-  - `/src/image.ts`
+  - `/islands/App/index.tsx`
+
+### Formatted palette objects
   - `/src/palette.ts`
 
+### Added multiple dithering algorithms
+  - `/src/dither.ts`
+
 ### Minor updates
-  - `/components/PixelArtSvg.tsx`
-  - `/islands/App/index.tsx`
+  - `/import_map.json`
+  - `/routes/_app.tsx`
+  - `/routes/index.tsx`
 
 ## Roadmap to v1.0.0
 
@@ -22,13 +25,13 @@
   3. [x] Add a dithering engine to the image conversion.
 
 ### v0.3.0 - Basic interactions phase
-  1. [ ] Add a button to download the resulting SVG.
+  1. [x] Add a button to download the resulting SVG.
   2. [ ] Add a loading spinner.
 
 ### v0.4.0 - Advanced configuration phase
-  1. [ ] Add `width` and `height` input for the resulting SVG dimentions.
+  1. [x] Add `width` and `height` input for the resulting SVG dimentions.
   2. [ ] Add an interactive `palette` input for a custom CSV palette.
-  3. [ ] Add a dithering algorithm selector.
+  3. [x] Add a dithering algorithm selector.
   4. [ ] Include instructions in the site.
 
 ### v0.5.0 - Decoration phase

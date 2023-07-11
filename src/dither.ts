@@ -1,37 +1,114 @@
 import { calculatePixelColorError, findClosestColor } from './color.ts';
 import { Pixel } from './image.ts';
 
-/**
- * @todo [!!] Complete documentation
- */
-const floydSteinberg = [
-  {
-    x: 1,
-    y: 0,
-    value: 7 / 16,
-  },
-  {
-    x: -1,
-    y: 1,
-    value: 3 / 16,
-  },
-  {
-    x: 0,
-    y: 1,
-    value: 5 / 16,
-  },
-  {
-    x: 1,
-    y: 1,
-    value: 1 / 16,
-  },
-];
+export type DitheringStep = {
+  x: number;
+  y: number;
+  value: number;
+};
+
+// prettier-ignore
+/** Contains all dithering algorithms names */
+export type DitheringAlgorithmNames = 'floyd_steinberg' | 'false_floyd_steinberg' | 'jarvis_judice_ninke' | 'stucki' | 'atkinson' | 'burkes' | 'sierra' | 'two_row_sierra' | 'sierra_lite';
+
+// prettier-ignore
+/** Contains the dithering algorithms schemas */
+export const algorithms: { [key in DitheringAlgorithmNames]: DitheringStep[] } = {
+  floyd_steinberg: [
+    {   x: 1,     y: 0,     value: 7 / 16    },
+    {   x: -1,    y: 1,     value: 3 / 16    },
+    {   x: 0,     y: 1,     value: 5 / 16    },
+    {   x: 1,     y: 1,     value: 1 / 16    },
+  ],
+  false_floyd_steinberg: [
+    {   x: 1,     y: 0,     value: 3 / 8    },
+    {   x: -1,    y: 1,     value: 3 / 8    },
+    {   x: 0,     y: 1,     value: 2 / 8    },
+  ],
+  jarvis_judice_ninke: [
+    {   x: 1,     y: 0,     value: 7 / 48   },
+    {   x: 2,     y: 0,     value: 5 / 48   },
+    {   x: -2,    y: 1,     value: 5 / 48   },
+    {   x: -1,    y: 1,     value: 3 / 48   },
+    {   x: 0,     y: 1,     value: 7 / 48   },
+    {   x: 1,     y: 1,     value: 5 / 48   },
+    {   x: 2,     y: 1,     value: 3 / 48   },
+    {   x: -2,    y: 2,     value: 1 / 48   },
+    {   x: -1,    y: 2,     value: 3 / 48   },
+    {   x: 0,     y: 2,     value: 5 / 48   },
+    {   x: 1,     y: 2,     value: 3 / 48   },
+    {   x: 2,     y: 2,     value: 1 / 48   },
+  ],
+  stucki: [
+    {   x: 1,     y: 0,     value: 8 / 42   },
+    {   x: 2,     y: 0,     value: 4 / 42   },
+    {   x: -2,    y: 1,     value: 2 / 42   },
+    {   x: -1,    y: 1,     value: 4 / 42   },
+    {   x: 0,     y: 1,     value: 8 / 42   },
+    {   x: 1,     y: 1,     value: 4 / 42   },
+    {   x: 2,     y: 1,     value: 2 / 42   },
+    {   x: -2,    y: 2,     value: 1 / 42   },
+    {   x: -1,    y: 2,     value: 2 / 42   },
+    {   x: 0,     y: 2,     value: 4 / 42   },
+    {   x: 1,     y: 2,     value: 2 / 42   },
+    {   x: 2,     y: 2,     value: 1 / 42   },
+  ],
+  atkinson: [
+    {   x: 1,     y: 0,     value: 1 / 8    },
+    {   x: 2,     y: 0,     value: 1 / 8    },
+    {   x: -1,    y: 1,     value: 1 / 8    },
+    {   x: 0,     y: 1,     value: 1 / 8    },
+    {   x: 1,     y: 1,     value: 1 / 8    },
+    {   x: 0,     y: 2,     value: 1 / 8    },
+  ],
+  burkes: [
+    {   x: 1,     y: 0,     value: 8 / 32   },
+    {   x: 2,     y: 0,     value: 4 / 32   },
+    {   x: -2,    y: 1,     value: 2 / 32   },
+    {   x: -1,    y: 1,     value: 4 / 32   },
+    {   x: 0,     y: 1,     value: 8 / 32   },
+    {   x: 1,     y: 1,     value: 4 / 32   },
+    {   x: 2,     y: 1,     value: 2 / 32   },
+  ],
+  sierra: [
+    {   x: 1,     y: 0,     value: 5 / 32   },
+    {   x: 2,     y: 0,     value: 3 / 32   },
+    {   x: -2,    y: 1,     value: 2 / 32   },
+    {   x: -1,    y: 1,     value: 4 / 32   },
+    {   x: 0,     y: 1,     value: 5 / 32   },
+    {   x: 1,     y: 1,     value: 4 / 32   },
+    {   x: 2,     y: 1,     value: 2 / 32   },
+    {   x: -1,    y: 2,     value: 2 / 32   },
+    {   x: 0,     y: 2,     value: 3 / 32   },
+    {   x: 1,     y: 2,     value: 2 / 32   },
+  ],
+  two_row_sierra: [
+    {   x: 1,     y: 0,     value: 4 / 16   },
+    {   x: 2,     y: 0,     value: 3 / 16   },
+    {   x: -2,    y: 1,     value: 1 / 16   },
+    {   x: -1,    y: 1,     value: 2 / 16   },
+    {   x: 0,     y: 1,     value: 3 / 16   },
+    {   x: 1,     y: 1,     value: 2 / 16   },
+    {   x: 2,     y: 1,     value: 1 / 16   },
+  ],
+  sierra_lite: [
+    {   x: 1,     y: 0,     value: 2 / 4    },
+    {   x: -1,    y: 1,     value: 1 / 4    },
+    {   x: 0,     y: 1,     value: 1 / 4    },
+  ],
+};
 
 /**
  * @todo [!!] Complete documentation
  */
-export function dither(pixels: Pixel[], width: number, height: number, palette: Pixel[]): Pixel[] {
-  return pixels.map((pixel, index) => {
+export const dither = (
+  pixels: Pixel[],
+  width: number,
+  height: number,
+  palette: Pixel[],
+  algorithm: DitheringAlgorithmNames
+): Pixel[] =>
+  pixels.map((pixel, index) => {
     if (pixel.a <= 0.01) {
       return {
         r: 0,
@@ -44,7 +121,7 @@ export function dither(pixels: Pixel[], width: number, height: number, palette: 
     const closestColor = findClosestColor(pixel, palette);
     const errorPixel = calculatePixelColorError(pixel, closestColor);
 
-    floydSteinberg.forEach((dither) => {
+    algorithms[algorithm].forEach((dither) => {
       const targetIndex = getIndexFromCoordinates(width, height, index, dither.x, dither.y);
 
       if (targetIndex) {
@@ -56,7 +133,6 @@ export function dither(pixels: Pixel[], width: number, height: number, palette: 
 
     return closestColor;
   });
-}
 
 /**
  * This function translates the coordinate system of a one-dimensional array into the one of a two-dimensional array. It finds a new index based on (x, y) coordinate movement relative to a current index in the 1D array.

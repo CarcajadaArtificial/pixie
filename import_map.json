@@ -11,6 +11,6 @@
     "imagescript": "https://deno.land/x/imagescript@v1.2.14/mod.ts",
     "ana-utils": "https://deno.land/x/ana_utils@v0.0.5/mod.ts",
     "ana-components-local": "../ana-components/mod.ts",
-    "ana-components": "https://deno.land/x/ana_components@v0.0.102/mod.ts"
+    "ana-components": "https://deno.land/x/ana_components@v0.0.103/mod.ts"
   }
 }

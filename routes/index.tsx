@@ -21,7 +21,7 @@ export default function Home() {
           </Text>
         </div>
       </Header>
-      <Main layout_type={LAYOUT_TYPES.CENTER}>
+      <Main>
         <App />
       </Main>
     </div>
